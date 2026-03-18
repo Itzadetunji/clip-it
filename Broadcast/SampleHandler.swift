@@ -10,7 +10,7 @@ import Photos
 import ReplayKit
 
 /// Broadcast extension entry point.
-/// This class writes the stream to temporary files and can save the latest 10 seconds to Photos.
+/// Writes the stream to a file. On Save, finishes the file, exports last 10 seconds to Photos, then starts a new file.
 final class SampleHandler: RPBroadcastSampleHandler {
     private let stateService = BroadcastStateService()
 
@@ -20,26 +20,23 @@ final class SampleHandler: RPBroadcastSampleHandler {
     private var outputURL: URL?
     private var sessionStarted = false
     private var isSavingClip = false
+    private let appGroupID = "group.com.adetunji.Screen-Record"
 
-    override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?)
-    {
+    override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
         stateService.setRecording(true)
         stateService.clearSaveRequest()
         stateService.setLastSaveError(nil)
-        prepareWriterForNextSegment()
+        prepareMainWriter()
     }
 
-    override func broadcastPaused() {
-        // Keep writer state intact; ReplayKit pauses sample delivery for us.
-    }
+    override func broadcastPaused() {}
 
-    override func broadcastResumed() {
-        // Sample delivery resumes automatically.
-    }
+    override func broadcastResumed() {}
 
     override func broadcastFinished() {
         stateService.setRecording(false)
         stateService.clearSaveRequest()
+        stateService.removeAllSavedClips()
         finishCurrentWriter {
             self.resetWriterState()
         }
@@ -50,46 +47,32 @@ final class SampleHandler: RPBroadcastSampleHandler {
         with sampleBufferType: RPSampleBufferType
     ) {
         if stateService.shouldSaveLast10Seconds() && !isSavingClip {
-            // Flip the flag first so one tap triggers one save.
             stateService.clearSaveRequest()
             handleSaveLast10SecondsRequest()
         }
 
-        // While exporting/saving we skip incoming buffers to keep logic simple and safe.
         guard !isSavingClip else { return }
         guard let assetWriter else { return }
 
         switch sampleBufferType {
         case .video:
             if videoInput == nil {
-                guard
-                    let formatDescription = CMSampleBufferGetFormatDescription(
-                        sampleBuffer
-                    )
-                else { return }
-                let dimensions = CMVideoFormatDescriptionGetDimensions(
-                    formatDescription
-                )
+                guard let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer) else { return }
+                let dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription)
                 let videoSettings: [String: Any] = [
                     AVVideoCodecKey: AVVideoCodecType.h264,
                     AVVideoWidthKey: dimensions.width,
                     AVVideoHeightKey: dimensions.height,
                 ]
-                let input = AVAssetWriterInput(
-                    mediaType: .video,
-                    outputSettings: videoSettings
-                )
+                let input = AVAssetWriterInput(mediaType: .video, outputSettings: videoSettings)
                 input.expectsMediaDataInRealTime = true
-
                 guard assetWriter.canAdd(input) else { return }
                 assetWriter.add(input)
                 videoInput = input
             }
 
             if !sessionStarted {
-                let timestamp = CMSampleBufferGetPresentationTimeStamp(
-                    sampleBuffer
-                )
+                let timestamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
                 assetWriter.startWriting()
                 assetWriter.startSession(atSourceTime: timestamp)
                 sessionStarted = true
@@ -106,12 +89,8 @@ final class SampleHandler: RPBroadcastSampleHandler {
                     AVSampleRateKey: 44_100,
                     AVNumberOfChannelsKey: 1,
                 ]
-                let input = AVAssetWriterInput(
-                    mediaType: .audio,
-                    outputSettings: audioSettings
-                )
+                let input = AVAssetWriterInput(mediaType: .audio, outputSettings: audioSettings)
                 input.expectsMediaDataInRealTime = true
-
                 if assetWriter.canAdd(input) {
                     assetWriter.add(input)
                     audioInput = input
@@ -132,8 +111,6 @@ final class SampleHandler: RPBroadcastSampleHandler {
 
     // MARK: - Clip Saving
 
-    /// Finalizes the current recording file, exports only the last 10 seconds, saves to Photos,
-    /// then starts a new writer so recording can continue.
     private func handleSaveLast10SecondsRequest() {
         guard !isSavingClip else { return }
         guard sessionStarted else {
@@ -147,207 +124,140 @@ final class SampleHandler: RPBroadcastSampleHandler {
         let sourceURL = outputURL
         finishCurrentWriter { [weak self] in
             guard let self, let sourceURL else {
-                self?.stateService.setLastSaveError(
-                    "No recording segment available to save."
-                )
-                self?.prepareWriterForNextSegment()
+                self?.stateService.setLastSaveError("No recording segment available to save.")
+                self?.prepareMainWriter()
                 self?.isSavingClip = false
                 return
             }
 
-            self.exportLast10Seconds(from: sourceURL) { result in
-                switch result {
-                case .success:
-                    self.stateService.setLastSaveError(nil)
-                case .failure(let error):
-                    self.stateService.setLastSaveError(
-                        error.localizedDescription
-                    )
-                }
+            Task {
+                do {
+                    let duration = try await AVURLAsset(url: sourceURL).load(.duration)
+                    let durationSeconds = CMTimeGetSeconds(duration)
+                    let clipLengthSeconds = max(0, min(10, durationSeconds))
 
-                self.prepareWriterForNextSegment()
+                    guard clipLengthSeconds > 0 else {
+                        self.stateService.setLastSaveError("Not enough recorded data yet.")
+                        self.prepareMainWriter()
+                        self.isSavingClip = false
+                        return
+                    }
+
+                    guard let exportSession = AVAssetExportSession(
+                        asset: AVURLAsset(url: sourceURL),
+                        presetName: AVAssetExportPresetPassthrough
+                    ) else {
+                        self.stateService.setLastSaveError("Failed to create export session.")
+                        self.prepareMainWriter()
+                        self.isSavingClip = false
+                        return
+                    }
+
+                    guard let containerURL = FileManager.default.containerURL(
+                        forSecurityApplicationGroupIdentifier: self.appGroupID
+                    ) else {
+                        self.stateService.setLastSaveError("App Group not configured.")
+                        self.prepareMainWriter()
+                        self.isSavingClip = false
+                        return
+                    }
+
+                    let clipsURL = containerURL.appendingPathComponent("SavedClips", isDirectory: true)
+                    try? FileManager.default.createDirectory(at: clipsURL, withIntermediateDirectories: true)
+                    let exportURL = clipsURL.appendingPathComponent("Last10-\(Date().timeIntervalSince1970).mp4")
+                    try? FileManager.default.removeItem(at: exportURL)
+
+                    let endTime = duration
+                    let startSeconds = max(0, durationSeconds - clipLengthSeconds)
+                    let startTime = CMTime(seconds: startSeconds, preferredTimescale: 600)
+                    let timeRange = CMTimeRangeFromTimeToTime(start: startTime, end: endTime)
+
+                    exportSession.outputURL = exportURL
+                    exportSession.outputFileType = .mp4
+                    exportSession.timeRange = timeRange
+
+                    try await exportSession.export(to: exportURL, as: .mp4)
+
+                    let saveResult = self.saveVideoToPhotosSync(url: exportURL)
+                    switch saveResult {
+                    case .success:
+                        self.stateService.setLastSaveError(nil)
+                        self.stateService.setLastSaveSucceeded(true)
+                        try? FileManager.default.removeItem(at: exportURL)
+                    case .failure(let error):
+                        self.stateService.setLastSaveError(error.localizedDescription)
+                    }
+
+                    self.prepareMainWriter()
+                } catch {
+                    self.stateService.setLastSaveError(error.localizedDescription)
+                    self.prepareMainWriter()
+                }
                 self.isSavingClip = false
             }
         }
     }
 
-    private func exportLast10Seconds(
-        from sourceURL: URL,
-        completion: @escaping (Result<Void, Error>) -> Void
-    ) {
-        let asset = AVURLAsset(url: sourceURL)
-
-        Task {
-            do {
-                // Modern API: load duration asynchronously.
-                let duration = try await asset.load(.duration)
-                let durationSeconds = CMTimeGetSeconds(duration)
-                let clipLengthSeconds = max(0, min(10, durationSeconds))
-
-                guard clipLengthSeconds > 0 else {
-                    completion(
-                        .failure(
-                            NSError(
-                                domain: "SampleHandler",
-                                code: -2,
-                                userInfo: [
-                                    NSLocalizedDescriptionKey:
-                                        "Not enough recorded data yet."
-                                ]
-                            )
-                        )
-                    )
-                    return
-                }
-
-                guard
-                    let exportSession = AVAssetExportSession(
-                        asset: asset,
-                        presetName: AVAssetExportPresetPassthrough
-                    )
-                else {
-                    completion(
-                        .failure(
-                            NSError(
-                                domain: "SampleHandler",
-                                code: -3,
-                                userInfo: [
-                                    NSLocalizedDescriptionKey:
-                                        "Failed to create export session."
-                                ]
-                            )
-                        )
-                    )
-                    return
-                }
-
-                guard
-                    let containerURL = FileManager.default.containerURL(
-                        forSecurityApplicationGroupIdentifier:
-                            "group.com.adetunji.Screen-Record"
-                    )
-                else {
-                    completion(
-                        .failure(
-                            NSError(
-                                domain: "SampleHandler",
-                                code: -4,
-                                userInfo: [
-                                    NSLocalizedDescriptionKey:
-                                        "App Group not configured."
-                                ]
-                            )
-                        )
-                    )
-                    return
-                }
-
-                let clipsURL = containerURL.appendingPathComponent(
-                    "SavedClips",
-                    isDirectory: true
-                )
-                try? FileManager.default.createDirectory(
-                    at: clipsURL,
-                    withIntermediateDirectories: true
-                )
-
-                let exportURL = clipsURL.appendingPathComponent(
-                    "Last10-\(Date().timeIntervalSince1970).mp4"
-                )
-                try? FileManager.default.removeItem(at: exportURL)
-
-                let endTime = duration
-                let startSeconds = max(0, durationSeconds - clipLengthSeconds)
-                let startTime = CMTime(
-                    seconds: startSeconds,
-                    preferredTimescale: duration.timescale == 0
-                        ? 600 : duration.timescale
-                )
-                let timeRange = CMTimeRangeFromTimeToTime(
-                    start: startTime,
-                    end: endTime
-                )
-
-                exportSession.timeRange = timeRange
-
-                // Modern iOS 18+ API for exporting without deprecated callbacks/status polling.
-                try await exportSession.export(to: exportURL, as: .mp4)
-                self.saveVideoToPhotos(url: exportURL, completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
+    private func saveVideoToPhotosSync(url: URL) -> Result<Void, Error> {
+        let authSemaphore = DispatchSemaphore(value: 0)
+        var authStatus: PHAuthorizationStatus = .notDetermined
+        PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
+            authStatus = status
+            authSemaphore.signal()
         }
-    }
+        _ = authSemaphore.wait(timeout: .now() + 5)
 
-    private func saveVideoToPhotos(
-        url: URL,
-        completion: @escaping (Result<Void, Error>) -> Void
-    ) {
-        PHPhotoLibrary.shared().performChanges({
-            PHAssetChangeRequest.creationRequestForAssetFromVideo(
-                atFileURL: url
-            )
-        }) { success, error in
-            if success {
-                completion(.success(()))
-            } else {
-                completion(
-                    .failure(
-                        error
-                            ?? NSError(
-                                domain: "SampleHandler",
-                                code: -6,
-                                userInfo: [
-                                    NSLocalizedDescriptionKey:
-                                        "Unable to save clip to Photos."
-                                ]
-                            )
-                    )
-                )
-            }
-        }
-    }
-
-    // MARK: - Writer Helpers
-
-    private func prepareWriterForNextSegment() {
-        resetWriterState()
-
-        guard
-            let containerURL = FileManager.default.containerURL(
-                forSecurityApplicationGroupIdentifier:
-                    "group.com.adetunji.Screen-Record"
-            )
-        else {
-            finishBroadcastWithError(
+        guard authStatus == .authorized || authStatus == .limited else {
+            return .failure(
                 NSError(
                     domain: "SampleHandler",
-                    code: -1,
-                    userInfo: [
-                        NSLocalizedDescriptionKey: "App Group not configured"
-                    ]
+                    code: -11,
+                    userInfo: [NSLocalizedDescriptionKey: "Photo Library access is required. Enable it in Settings."]
                 )
             )
+        }
+
+        var result: Result<Void, Error> = .failure(
+            NSError(domain: "SampleHandler", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unable to save clip to Photos."])
+        )
+        let semaphore = DispatchSemaphore(value: 0)
+
+        PHPhotoLibrary.shared().performChanges({
+            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
+        }) { success, error in
+            if success {
+                result = .success(())
+            } else {
+                result = .failure(error ?? NSError(domain: "SampleHandler", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unable to save clip to Photos."]))
+            }
+            semaphore.signal()
+        }
+
+        if semaphore.wait(timeout: .now() + 15) == .timedOut {
+            return .failure(NSError(domain: "SampleHandler", code: -7, userInfo: [NSLocalizedDescriptionKey: "Saving clip to Photos timed out."]))
+        }
+        return result
+    }
+
+    // MARK: - Main Writer Helpers
+
+    private func prepareMainWriter() {
+        resetWriterState()
+
+        guard let containerURL = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: appGroupID
+        ) else {
+            finishBroadcastWithError(NSError(domain: "SampleHandler", code: -1, userInfo: [NSLocalizedDescriptionKey: "App Group not configured"]))
             return
         }
 
-        let recordingsURL = containerURL.appendingPathComponent(
-            "Recordings",
-            isDirectory: true
-        )
-        try? FileManager.default.createDirectory(
-            at: recordingsURL,
-            withIntermediateDirectories: true
-        )
-
+        let recordingsURL = containerURL.appendingPathComponent("Recordings", isDirectory: true)
+        try? FileManager.default.createDirectory(at: recordingsURL, withIntermediateDirectories: true)
         let fileName = "Recording-\(Date().timeIntervalSince1970).mp4"
         let newOutputURL = recordingsURL.appendingPathComponent(fileName)
 
         do {
-            assetWriter = try AVAssetWriter(
-                outputURL: newOutputURL,
-                fileType: .mp4
-            )
+            assetWriter = try AVAssetWriter(outputURL: newOutputURL, fileType: .mp4)
             outputURL = newOutputURL
             sessionStarted = false
         } catch {
@@ -360,10 +270,8 @@ final class SampleHandler: RPBroadcastSampleHandler {
             completion()
             return
         }
-
         videoInput?.markAsFinished()
         audioInput?.markAsFinished()
-
         assetWriter.finishWriting {
             completion()
         }

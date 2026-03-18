@@ -14,6 +14,7 @@ struct BroadcastStateService {
   private static let isRecordingKey = "broadcast.isRecording"
   private static let saveLast10SecondsKey = "broadcast.saveLast10Seconds"
   private static let lastSaveErrorKey = "broadcast.lastSaveError"
+  private static let lastSaveSucceededKey = "broadcast.lastSaveSucceeded"
 
   private let sharedDefaults: UserDefaults?
 
@@ -54,5 +55,43 @@ struct BroadcastStateService {
 
   func getLastSaveError() -> String? {
     sharedDefaults?.string(forKey: Self.lastSaveErrorKey)
+  }
+
+  /// Extension sets this when save to Photos succeeds. App reads and clears it.
+  func setLastSaveSucceeded(_ succeeded: Bool) {
+    sharedDefaults?.set(succeeded, forKey: Self.lastSaveSucceededKey)
+  }
+
+  func getAndClearLastSaveSucceeded() -> Bool {
+    let value = sharedDefaults?.bool(forKey: Self.lastSaveSucceededKey) ?? false
+    sharedDefaults?.set(false, forKey: Self.lastSaveSucceededKey)
+    return value
+  }
+
+  /// Removes all temporary 10-second clips from App Group storage.
+  /// This does not touch files already saved to Photos.
+  func removeAllSavedClips() {
+    guard let containerURL = FileManager.default.containerURL(
+      forSecurityApplicationGroupIdentifier: Self.appGroupID
+    ) else { return }
+
+    let savedClipsURL = containerURL.appendingPathComponent("SavedClips", isDirectory: true)
+    guard FileManager.default.fileExists(atPath: savedClipsURL.path) else { return }
+
+    if let clipURLs = try? FileManager.default.contentsOfDirectory(
+      at: savedClipsURL,
+      includingPropertiesForKeys: nil
+    ) {
+      for clipURL in clipURLs {
+        try? FileManager.default.removeItem(at: clipURL)
+      }
+    }
+  }
+
+  /// Convenience helper for app launch:
+  /// if recording is not active, clear old temporary clips.
+  func removeSavedClipsIfNotRecording() {
+    guard !isRecordingActive() else { return }
+    removeAllSavedClips()
   }
 }

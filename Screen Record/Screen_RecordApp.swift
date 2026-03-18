@@ -10,6 +10,8 @@ import SwiftUI
 
 @main
 struct Screen_RecordApp: App {
+  private let broadcastStateService = BroadcastStateService()
+
   var sharedModelContainer: ModelContainer = {
     let schema = Schema([
       Item.self
@@ -22,6 +24,12 @@ struct Screen_RecordApp: App {
       fatalError("Could not create ModelContainer: \(error)")
     }
   }()
+
+  init() {
+    // First app load cleanup:
+    // if recording is currently inactive, clear old temporary clip files.
+    broadcastStateService.removeSavedClipsIfNotRecording()
+  }
 
   var body: some Scene {
     WindowGroup {

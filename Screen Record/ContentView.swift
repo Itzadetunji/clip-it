@@ -5,6 +5,7 @@
 //  Created by Adetunji Adeyinka on 17/03/2026.
 //
 
+import Photos
 import ReplayKit
 import SwiftUI
 
@@ -91,6 +92,8 @@ struct ContentView: View {
       .frame(maxWidth: .infinity, maxHeight: .infinity)
       .background(Color(.systemBackground))
       .onAppear {
+        // Request Photos permission so the extension can save clips.
+        PHPhotoLibrary.requestAuthorization(for: .addOnly) { _ in }
         recordingViewModel.startMonitoring()
       }
       .onDisappear {

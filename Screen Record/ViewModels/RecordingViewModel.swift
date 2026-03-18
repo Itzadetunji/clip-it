@@ -57,9 +57,8 @@ final class RecordingViewModel {
       return
     }
 
-    // If the request was pending and extension no longer reports an error,
-    // we treat that as a successful save.
-    if isSaveRequestPending {
+    // Only show success when extension explicitly signals it finished successfully.
+    if stateService.getAndClearLastSaveSucceeded() {
       saveStatusIsError = false
       saveStatusMessage = "Saved last 10 seconds to Photos."
       isSaveRequestPending = false
