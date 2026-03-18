@@ -1,6 +1,6 @@
 //
-//  Screen_RecordApp.swift
-//  Screen Record
+//  ClipItApp.swift
+//  Clip-It
 //
 //  Created by Adetunji Adeyinka on 17/03/2026.
 //
@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 @main
-struct Screen_RecordApp: App {
+struct ClipItApp: App {
   private let broadcastStateService = BroadcastStateService()
 
   var sharedModelContainer: ModelContainer = {

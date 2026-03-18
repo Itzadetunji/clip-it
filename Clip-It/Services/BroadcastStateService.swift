@@ -1,6 +1,6 @@
 //
 //  BroadcastStateService.swift
-//  Screen Record
+//  Clip-It
 //
 //  Created by Cursor on 17/03/2026.
 //

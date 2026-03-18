@@ -1,6 +1,6 @@
 //
 //  SampleHandler.swift
-//  BroadcastExtension
+//  ClipItExtension
 //
 //  Created by Adetunji Adeyinka on 17/03/2026.
 //

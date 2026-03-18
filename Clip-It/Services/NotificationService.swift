@@ -1,6 +1,6 @@
 //
 //  NotificationService.swift
-//  Screen Record
+//  Clip-It
 //
 //  Created by Adetunji Adeyinka on 18/03/2026.
 //

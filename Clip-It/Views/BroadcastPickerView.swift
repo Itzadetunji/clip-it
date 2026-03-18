@@ -1,6 +1,6 @@
 //
 //  BroadcastPickerView.swift
-//  Screen Record
+//  Clip-It
 //
 //  Created by Adetunji Adeyinka on 17/03/2026.
 //
@@ -16,7 +16,7 @@ struct BroadcastPickerView: UIViewRepresentable {
   @Binding var trigger: Bool
 
   init(
-    preferredExtension: String? = "com.adetunji.Screen-Record.Broadcast",
+    preferredExtension: String? = "com.adetunji.Screen-Record.ClipIt",
     trigger: Binding<Bool> = .constant(false)
   ) {
     self.preferredExtension = preferredExtension

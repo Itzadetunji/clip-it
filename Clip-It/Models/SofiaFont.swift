@@ -1,6 +1,6 @@
 //
 //  AppFont.swift
-//  Screen Record
+//  Clip-It
 //
 //  Created by Adetunji Adeyinka on 17/03/2026.
 //
