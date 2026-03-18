@@ -14,20 +14,20 @@ private let saveLastKey = "broadcast.saveLast10Seconds"
 private let saveDurationKey = "broadcast.saveDurationSeconds"
 
 struct ClipStateService {
-    private let defaults = UserDefaults(suiteName: appGroupID)
+  private let defaults = UserDefaults(suiteName: appGroupID)
 
-    /// User-selected clip duration in seconds (15, 30, or 60). Default 15.
-    /// Same logic as BroadcastStateService; used when Control Center "Save" uses app default.
-    func getSaveDurationSeconds() -> Int {
-        let value = defaults?.integer(forKey: saveDurationKey) ?? 0
-        return [15, 30, 60].contains(value) ? value : 15
-    }
+  /// User-selected clip duration in seconds (15, 30, or 60). Default 15.
+  /// Same logic as BroadcastStateService; used when Control Center "Save" uses app default.
+  func getSaveDurationSeconds() -> Int {
+    let value = defaults?.integer(forKey: saveDurationKey) ?? 0
+    return [15, 30, 60].contains(value) ? value : 15
+  }
 
-    func setSaveDurationSeconds(_ seconds: Int) {
-        defaults?.set(seconds, forKey: saveDurationKey)
-    }
+  func setSaveDurationSeconds(_ seconds: Int) {
+    defaults?.set(seconds, forKey: saveDurationKey)
+  }
 
-    func requestSave() {
-        defaults?.set(true, forKey: saveLastKey)
-    }
+  func requestSave() {
+    defaults?.set(true, forKey: saveLastKey)
+  }
 }

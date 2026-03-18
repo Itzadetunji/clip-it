@@ -8,8 +8,8 @@
 import SwiftUI
 import WidgetKit
 
-struct ClipControlWidget: ControlWidget {
-    static let kind = "com.adetunji.Screen-Record.ClipControl"
+struct ClipControlSaveWidget: ControlWidget {
+    static let kind = "com.adetunji.Screen-Record.ClipControl.Save"
 
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: Self.kind) {
