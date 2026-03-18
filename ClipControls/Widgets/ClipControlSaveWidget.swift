@@ -14,7 +14,8 @@ struct ClipControlSaveWidget: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: Self.kind) {
             ControlWidgetButton(action: SaveClipIntent()) {
-                Label("Save Clip", systemImage: "record.circle")
+                Label("Save Clip", image: "clip-it-logo.symbols")
+                        .symbolEffect(.pulse)
             }
         }
         .displayName("Save Clip")

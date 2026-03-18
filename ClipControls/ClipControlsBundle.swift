@@ -10,8 +10,7 @@ import WidgetKit
 
 @main
 struct ClipControlsBundle: WidgetBundle {
-    var body: some Widget {
-        ClipControlSaveWidget()
-        ClipControlStartWidget()
-    }
+  var body: some Widget {
+    ClipControlSaveWidget()
+  }
 }
