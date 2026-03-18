@@ -130,7 +130,7 @@
 			);
 			target = C4FA26052F69715600717246 /* Clip-It */;
 		};
-		C4FA26462F69956100717246 /* Exceptions for "ClipIt" folder in "ClipIt" target */ = {
+		C4FA26462F69956100717246 /* Exceptions for "ClipItExtensions" folder in "ClipIt" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -162,12 +162,12 @@
 			path = "Clip-It";
 			sourceTree = "<group>";
 		};
-		C4FA26302F69956100717246 /* ClipIt */ = {
+		C4FA26302F69956100717246 /* ClipItExtensions */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				C4FA26462F69956100717246 /* Exceptions for "ClipIt" folder in "ClipIt" target */,
+				C4FA26462F69956100717246 /* Exceptions for "ClipItExtensions" folder in "ClipIt" target */,
 			);
-			path = ClipIt;
+			path = ClipItExtensions;
 			sourceTree = "<group>";
 		};
 		C4FA263C2F69956100717246 /* ClipItSetupUI */ = {
@@ -228,7 +228,7 @@
 			children = (
 				C4FA26082F69715600717246 /* Clip-It */,
 				C4FAF0212F69960000717246 /* Clip-It/Font */,
-				C4FA26302F69956100717246 /* ClipIt */,
+				C4FA26302F69956100717246 /* ClipItExtensions */,
 				C4FA263C2F69956100717246 /* ClipItSetupUI */,
 				C4FA2A052F69970000717246 /* ClipControls */,
 				C4FA262D2F69956100717246 /* Frameworks */,
@@ -322,7 +322,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				C4FA26302F69956100717246 /* ClipIt */,
+				C4FA26302F69956100717246 /* ClipItExtensions */,
 			);
 			name = ClipIt;
 			packageProductDependencies = (
@@ -647,7 +647,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt";
+				PRODUCT_BUNDLE_IDENTIFIER = com.adetunji.ClipIt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -695,7 +695,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt";
+				PRODUCT_BUNDLE_IDENTIFIER = com.adetunji.ClipIt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -730,7 +730,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipIt";
+				PRODUCT_BUNDLE_IDENTIFIER = com.adetunji.ClipIt.ClipIt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -762,7 +762,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipIt";
+				PRODUCT_BUNDLE_IDENTIFIER = com.adetunji.ClipIt.ClipIt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -793,7 +793,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipItSetupUI";
+				PRODUCT_BUNDLE_IDENTIFIER = com.adetunji.ClipIt.ClipItSetupUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -823,7 +823,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipItSetupUI";
+				PRODUCT_BUNDLE_IDENTIFIER = com.adetunji.ClipIt.ClipItSetupUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -855,7 +855,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipControls";
+				PRODUCT_BUNDLE_IDENTIFIER = com.adetunji.ClipIt.ClipControls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -884,7 +884,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipControls";
+				PRODUCT_BUNDLE_IDENTIFIER = com.adetunji.ClipIt.ClipControls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
