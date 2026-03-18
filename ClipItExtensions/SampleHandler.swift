@@ -30,7 +30,8 @@ final class SampleHandler: RPBroadcastSampleHandler {
     private var segments: [SegmentMetadata] = []
     private var currentWriter: AVAssetWriter?
     private var currentVideoInput: AVAssetWriterInput?
-    private var currentAudioInput: AVAssetWriterInput?
+    private var currentAudioAppInput: AVAssetWriterInput?
+    private var currentAudioMicInput: AVAssetWriterInput?
     private var currentSegmentURL: URL?
     private var currentSegmentStartTime: CMTime?
     private var currentSegmentLastTime: CMTime?
@@ -77,7 +78,7 @@ final class SampleHandler: RPBroadcastSampleHandler {
         _ sampleBuffer: CMSampleBuffer,
         with sampleBufferType: RPSampleBufferType
     ) {
-        guard sampleBufferType == .video || sampleBufferType == .audioApp else {
+        guard sampleBufferType == .video || sampleBufferType == .audioApp || sampleBufferType == .audioMic else {
             return
         }
 
@@ -118,7 +119,9 @@ final class SampleHandler: RPBroadcastSampleHandler {
             case .video:
                 targetInput = self.currentVideoInput
             case .audioApp:
-                targetInput = self.currentAudioInput
+                targetInput = self.currentAudioAppInput
+            case .audioMic:
+                targetInput = self.currentAudioMicInput
             default:
                 targetInput = nil
             }
@@ -157,7 +160,8 @@ final class SampleHandler: RPBroadcastSampleHandler {
         }
 
         videoInput.markAsFinished()
-        currentAudioInput?.markAsFinished()
+        currentAudioAppInput?.markAsFinished()
+        currentAudioMicInput?.markAsFinished()
 
         let semaphore = DispatchSemaphore(value: 0)
         writer.finishWriting {
@@ -223,26 +227,45 @@ final class SampleHandler: RPBroadcastSampleHandler {
                 guard writer.canAdd(input) else { return }
                 writer.add(input)
                 currentVideoInput = input
+                addAudioInputsIfNeeded(to: writer)
             }
-        case .audioApp:
-            if currentAudioInput == nil {
-                let settings: [String: Any] = [
-                    AVFormatIDKey: kAudioFormatMPEG4AAC,
-                    AVSampleRateKey: 44_100,
-                    AVNumberOfChannelsKey: 1,
-                ]
-                let input = AVAssetWriterInput(
-                    mediaType: .audio,
-                    outputSettings: settings
-                )
-                input.expectsMediaDataInRealTime = true
-                if writer.canAdd(input) {
-                    writer.add(input)
-                    currentAudioInput = input
-                }
-            }
+        case .audioApp, .audioMic:
+            break
         default:
             break
+        }
+    }
+
+    /// Adds audio inputs before startWriting. Must be called when adding video input.
+    /// Uses 48kHz stereo AAC - common ReplayKit format.
+    private func addAudioInputsIfNeeded(to writer: AVAssetWriter) {
+        let audioSettings: [String: Any] = [
+            AVFormatIDKey: kAudioFormatMPEG4AAC,
+            AVSampleRateKey: 48_000,
+            AVNumberOfChannelsKey: 2,
+            AVEncoderBitRateKey: 128_000,
+        ]
+        if currentAudioAppInput == nil {
+            let input = AVAssetWriterInput(
+                mediaType: .audio,
+                outputSettings: audioSettings
+            )
+            input.expectsMediaDataInRealTime = true
+            if writer.canAdd(input) {
+                writer.add(input)
+                currentAudioAppInput = input
+            }
+        }
+        if currentAudioMicInput == nil {
+            let input = AVAssetWriterInput(
+                mediaType: .audio,
+                outputSettings: audioSettings
+            )
+            input.expectsMediaDataInRealTime = true
+            if writer.canAdd(input) {
+                writer.add(input)
+                currentAudioMicInput = input
+            }
         }
     }
 
@@ -265,7 +288,8 @@ final class SampleHandler: RPBroadcastSampleHandler {
     private func resetCurrentSegmentWriter() {
         currentWriter = nil
         currentVideoInput = nil
-        currentAudioInput = nil
+        currentAudioAppInput = nil
+        currentAudioMicInput = nil
         currentSegmentURL = nil
         currentSegmentStartTime = nil
         currentSegmentLastTime = nil
@@ -351,7 +375,11 @@ final class SampleHandler: RPBroadcastSampleHandler {
                 )
             }
 
-            let audioTrack = composition.addMutableTrack(
+            let appAudioTrack = composition.addMutableTrack(
+                withMediaType: .audio,
+                preferredTrackID: kCMPersistentTrackID_Invalid
+            )
+            let micAudioTrack = composition.addMutableTrack(
                 withMediaType: .audio,
                 preferredTrackID: kCMPersistentTrackID_Invalid
             )
@@ -371,17 +399,23 @@ final class SampleHandler: RPBroadcastSampleHandler {
                     )
                 }
 
-                if let audioTrack {
-                    let assetAudioTracks = try await asset.loadTracks(
-                        withMediaType: .audio
+                let assetAudioTracks = try await asset.loadTracks(
+                    withMediaType: .audio
+                )
+                // First audio track = system/app audio, second = mic (if present)
+                if let appTrack = assetAudioTracks.first, let appAudioTrack {
+                    try appAudioTrack.insertTimeRange(
+                        CMTimeRange(start: .zero, duration: assetDuration),
+                        of: appTrack,
+                        at: insertionTime
                     )
-                    if let sourceAudioTrack = assetAudioTracks.first {
-                        try audioTrack.insertTimeRange(
-                            CMTimeRange(start: .zero, duration: assetDuration),
-                            of: sourceAudioTrack,
-                            at: insertionTime
-                        )
-                    }
+                }
+                if assetAudioTracks.count > 1, let micTrack = assetAudioTracks.last, let micAudioTrack {
+                    try micAudioTrack.insertTimeRange(
+                        CMTimeRange(start: .zero, duration: assetDuration),
+                        of: micTrack,
+                        at: insertionTime
+                    )
                 }
 
                 insertionTime = CMTimeAdd(insertionTime, assetDuration)
