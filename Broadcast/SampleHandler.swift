@@ -40,7 +40,6 @@ final class SampleHandler: RPBroadcastSampleHandler {
 
     private let appGroupID = "group.com.adetunji.Screen-Record"
     private let segmentDurationSeconds: Double = 1.0
-    private let saveWindowSeconds: Double = 10.0
     private let rollingWindowSeconds: Double = 60.0
 
     override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
@@ -285,6 +284,7 @@ final class SampleHandler: RPBroadcastSampleHandler {
             return
         }
 
+        let saveWindowSeconds = Double(stateService.getSaveDurationSeconds())
         let windowEnd = latestSegment.endTime
         let windowStart = CMTimeSubtract(
             windowEnd,

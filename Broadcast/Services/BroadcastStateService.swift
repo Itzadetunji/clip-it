@@ -13,6 +13,7 @@ struct BroadcastStateService {
   private static let appGroupID = "group.com.adetunji.Screen-Record"
   private static let isRecordingKey = "broadcast.isRecording"
   private static let saveLast10SecondsKey = "broadcast.saveLast10Seconds"
+  private static let saveDurationSecondsKey = "broadcast.saveDurationSeconds"
   private static let lastSaveErrorKey = "broadcast.lastSaveError"
   private static let lastSaveSucceededKey = "broadcast.lastSaveSucceeded"
 
@@ -42,6 +43,16 @@ struct BroadcastStateService {
 
   func clearSaveRequest() {
     sharedDefaults?.set(false, forKey: Self.saveLast10SecondsKey)
+  }
+
+  /// User-selected clip duration in seconds (15, 30, or 60). Default 15.
+  func getSaveDurationSeconds() -> Int {
+    let value = sharedDefaults?.integer(forKey: Self.saveDurationSecondsKey) ?? 0
+    return [15, 30, 60].contains(value) ? value : 15
+  }
+
+  func setSaveDurationSeconds(_ seconds: Int) {
+    sharedDefaults?.set(seconds, forKey: Self.saveDurationSecondsKey)
   }
 
   func setLastSaveError(_ message: String?) {

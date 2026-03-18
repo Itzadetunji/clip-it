@@ -12,6 +12,22 @@
 		C4FA263B2F69956100717246 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA263A2F69956100717246 /* UIKit.framework */; };
 		C4FA26422F69956100717246 /* BroadcastSetupUI.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C4FA26382F69956100717246 /* BroadcastSetupUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C4FA26452F69956100717246 /* Broadcast.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C4FA262C2F69956100717246 /* Broadcast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C4FAF0012F69960000717246 /* Sofia Pro Black Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF0112F69960000717246 /* Sofia Pro Black Az.otf */; };
+		C4FAF0022F69960000717246 /* Sofia Pro Black Italic Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF0122F69960000717246 /* Sofia Pro Black Italic Az.otf */; };
+		C4FAF0032F69960000717246 /* Sofia Pro Bold Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF0132F69960000717246 /* Sofia Pro Bold Az.otf */; };
+		C4FAF0042F69960000717246 /* Sofia Pro Bold Italic Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF0142F69960000717246 /* Sofia Pro Bold Italic Az.otf */; };
+		C4FAF0052F69960000717246 /* Sofia Pro ExtraLight Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF0152F69960000717246 /* Sofia Pro ExtraLight Az.otf */; };
+		C4FAF0062F69960000717246 /* Sofia Pro ExtraLight Italic Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF0162F69960000717246 /* Sofia Pro ExtraLight Italic Az.otf */; };
+		C4FAF0072F69960000717246 /* Sofia Pro Light Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF0172F69960000717246 /* Sofia Pro Light Az.otf */; };
+		C4FAF0082F69960000717246 /* Sofia Pro Light Italic Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF0182F69960000717246 /* Sofia Pro Light Italic Az.otf */; };
+		C4FAF0092F69960000717246 /* Sofia Pro Medium Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF0192F69960000717246 /* Sofia Pro Medium Az.otf */; };
+		C4FAF00A2F69960000717246 /* Sofia Pro Medium Italic Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF01A2F69960000717246 /* Sofia Pro Medium Italic Az.otf */; };
+		C4FAF00B2F69960000717246 /* Sofia Pro Regular Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF01B2F69960000717246 /* Sofia Pro Regular Az.otf */; };
+		C4FAF00C2F69960000717246 /* Sofia Pro Regular Italic Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF01C2F69960000717246 /* Sofia Pro Regular Italic Az.otf */; };
+		C4FAF00D2F69960000717246 /* Sofia Pro Semi Bold Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF01D2F69960000717246 /* Sofia Pro Semi Bold Az.otf */; };
+		C4FAF00E2F69960000717246 /* Sofia Pro Semi Bold Italic Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF01E2F69960000717246 /* Sofia Pro Semi Bold Italic Az.otf */; };
+		C4FAF00F2F69960000717246 /* Sofia Pro UltraLight Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF01F2F69960000717246 /* Sofia Pro UltraLight Az.otf */; };
+		C4FAF0102F69960000717246 /* Sofia Pro UltraLight Italic Az.otf in Copy Fonts */ = {isa = PBXBuildFile; fileRef = C4FAF0202F69960000717246 /* Sofia Pro UltraLight Italic Az.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +60,32 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C4FAF0302F69960000717246 /* Copy Fonts */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Font;
+			dstSubfolderSpec = 7;
+			files = (
+				C4FAF0012F69960000717246 /* Sofia Pro Black Az.otf in Copy Fonts */,
+				C4FAF0022F69960000717246 /* Sofia Pro Black Italic Az.otf in Copy Fonts */,
+				C4FAF0032F69960000717246 /* Sofia Pro Bold Az.otf in Copy Fonts */,
+				C4FAF0042F69960000717246 /* Sofia Pro Bold Italic Az.otf in Copy Fonts */,
+				C4FAF0052F69960000717246 /* Sofia Pro ExtraLight Az.otf in Copy Fonts */,
+				C4FAF0062F69960000717246 /* Sofia Pro ExtraLight Italic Az.otf in Copy Fonts */,
+				C4FAF0072F69960000717246 /* Sofia Pro Light Az.otf in Copy Fonts */,
+				C4FAF0082F69960000717246 /* Sofia Pro Light Italic Az.otf in Copy Fonts */,
+				C4FAF0092F69960000717246 /* Sofia Pro Medium Az.otf in Copy Fonts */,
+				C4FAF00A2F69960000717246 /* Sofia Pro Medium Italic Az.otf in Copy Fonts */,
+				C4FAF00B2F69960000717246 /* Sofia Pro Regular Az.otf in Copy Fonts */,
+				C4FAF00C2F69960000717246 /* Sofia Pro Regular Italic Az.otf in Copy Fonts */,
+				C4FAF00D2F69960000717246 /* Sofia Pro Semi Bold Az.otf in Copy Fonts */,
+				C4FAF00E2F69960000717246 /* Sofia Pro Semi Bold Italic Az.otf in Copy Fonts */,
+				C4FAF00F2F69960000717246 /* Sofia Pro UltraLight Az.otf in Copy Fonts */,
+				C4FAF0102F69960000717246 /* Sofia Pro UltraLight Italic Az.otf in Copy Fonts */,
+			);
+			name = "Copy Fonts";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +94,22 @@
 		C4FA262E2F69956100717246 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		C4FA26382F69956100717246 /* BroadcastSetupUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BroadcastSetupUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4FA263A2F69956100717246 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		C4FAF0112F69960000717246 /* Sofia Pro Black Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Black Az.otf"; sourceTree = "<group>"; };
+		C4FAF0122F69960000717246 /* Sofia Pro Black Italic Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Black Italic Az.otf"; sourceTree = "<group>"; };
+		C4FAF0132F69960000717246 /* Sofia Pro Bold Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Bold Az.otf"; sourceTree = "<group>"; };
+		C4FAF0142F69960000717246 /* Sofia Pro Bold Italic Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Bold Italic Az.otf"; sourceTree = "<group>"; };
+		C4FAF0152F69960000717246 /* Sofia Pro ExtraLight Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro ExtraLight Az.otf"; sourceTree = "<group>"; };
+		C4FAF0162F69960000717246 /* Sofia Pro ExtraLight Italic Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro ExtraLight Italic Az.otf"; sourceTree = "<group>"; };
+		C4FAF0172F69960000717246 /* Sofia Pro Light Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Light Az.otf"; sourceTree = "<group>"; };
+		C4FAF0182F69960000717246 /* Sofia Pro Light Italic Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Light Italic Az.otf"; sourceTree = "<group>"; };
+		C4FAF0192F69960000717246 /* Sofia Pro Medium Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Medium Az.otf"; sourceTree = "<group>"; };
+		C4FAF01A2F69960000717246 /* Sofia Pro Medium Italic Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Medium Italic Az.otf"; sourceTree = "<group>"; };
+		C4FAF01B2F69960000717246 /* Sofia Pro Regular Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Regular Az.otf"; sourceTree = "<group>"; };
+		C4FAF01C2F69960000717246 /* Sofia Pro Regular Italic Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Regular Italic Az.otf"; sourceTree = "<group>"; };
+		C4FAF01D2F69960000717246 /* Sofia Pro Semi Bold Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Semi Bold Az.otf"; sourceTree = "<group>"; };
+		C4FAF01E2F69960000717246 /* Sofia Pro Semi Bold Italic Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro Semi Bold Italic Az.otf"; sourceTree = "<group>"; };
+		C4FAF01F2F69960000717246 /* Sofia Pro UltraLight Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro UltraLight Az.otf"; sourceTree = "<group>"; };
+		C4FAF0202F69960000717246 /* Sofia Pro UltraLight Italic Az.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sofia Pro UltraLight Italic Az.otf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -69,11 +127,21 @@
 			);
 			target = C4FA26372F69956100717246 /* BroadcastSetupUI */;
 		};
+		C4FA26512F69956100717246 /* Exceptions for "Screen Record" folder in "Screen Record" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C4FA26052F69715600717246 /* Screen Record */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C4FA26082F69715600717246 /* Screen Record */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C4FA26512F69956100717246 /* Exceptions for "Screen Record" folder in "Screen Record" target */,
+			);
 			path = "Screen Record";
 			sourceTree = "<group>";
 		};
@@ -127,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				C4FA26082F69715600717246 /* Screen Record */,
+				C4FAF0212F69960000717246 /* Screen Record/Font */,
 				C4FA26302F69956100717246 /* Broadcast */,
 				C4FA263C2F69956100717246 /* BroadcastSetupUI */,
 				C4FA262D2F69956100717246 /* Frameworks */,
@@ -153,6 +222,29 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		C4FAF0212F69960000717246 /* Screen Record/Font */ = {
+			isa = PBXGroup;
+			children = (
+				C4FAF0112F69960000717246 /* Sofia Pro Black Az.otf */,
+				C4FAF0122F69960000717246 /* Sofia Pro Black Italic Az.otf */,
+				C4FAF0132F69960000717246 /* Sofia Pro Bold Az.otf */,
+				C4FAF0142F69960000717246 /* Sofia Pro Bold Italic Az.otf */,
+				C4FAF0152F69960000717246 /* Sofia Pro ExtraLight Az.otf */,
+				C4FAF0162F69960000717246 /* Sofia Pro ExtraLight Italic Az.otf */,
+				C4FAF0172F69960000717246 /* Sofia Pro Light Az.otf */,
+				C4FAF0182F69960000717246 /* Sofia Pro Light Italic Az.otf */,
+				C4FAF0192F69960000717246 /* Sofia Pro Medium Az.otf */,
+				C4FAF01A2F69960000717246 /* Sofia Pro Medium Italic Az.otf */,
+				C4FAF01B2F69960000717246 /* Sofia Pro Regular Az.otf */,
+				C4FAF01C2F69960000717246 /* Sofia Pro Regular Italic Az.otf */,
+				C4FAF01D2F69960000717246 /* Sofia Pro Semi Bold Az.otf */,
+				C4FAF01E2F69960000717246 /* Sofia Pro Semi Bold Italic Az.otf */,
+				C4FAF01F2F69960000717246 /* Sofia Pro UltraLight Az.otf */,
+				C4FAF0202F69960000717246 /* Sofia Pro UltraLight Italic Az.otf */,
+			);
+			path = "Screen Record/Font";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -163,6 +255,7 @@
 				C4FA26022F69715600717246 /* Sources */,
 				C4FA26032F69715600717246 /* Frameworks */,
 				C4FA26042F69715600717246 /* Resources */,
+				C4FAF0302F69960000717246 /* Copy Fonts */,
 				C4FA264E2F69956100717246 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
@@ -459,6 +552,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Screen Record/Info.plist";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save screen recordings to your Photos library.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -505,6 +599,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Screen Record/Info.plist";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save screen recordings to your Photos library.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
