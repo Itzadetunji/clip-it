@@ -2,6 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.adetunji.ClipIt</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>clipit</string>
+			</array>
+		</dict>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Font/Sofia Pro Black Az.otf</string>
@@ -21,17 +32,5 @@
 		<string>Font/Sofia Pro UltraLight Az.otf</string>
 		<string>Font/Sofia Pro UltraLight Italic Az.otf</string>
 	</array>
-
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>clipit</string>
-            </array>
-            <key>CFBundleURLName</key>
-            <string>com.adetunji.ClipIt</string>
-        </dict>
-    </array>
 </dict>
 </plist>
