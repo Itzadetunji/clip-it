@@ -54,7 +54,9 @@ struct ContentView: View {
                     stateService: stateService
                 )
 
+                Spacer()
             }
+            .overlay(EnableNotificationsView().allowsHitTesting(false))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(.systemBackground))
             .onAppear {
