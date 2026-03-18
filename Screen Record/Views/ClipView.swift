@@ -64,6 +64,7 @@ struct ClipView: View {
 
                 Button {
                     checkPhotoAccess {
+                        stateService.setSaveDurationSeconds(selectedDuration)
                         recordingViewModel.requestSaveLast10Seconds()
                     }
                 } label: {
@@ -79,7 +80,7 @@ struct ClipView: View {
                             )
                         )
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.plain) 
                 .disabled(!recordingViewModel.isRecording)
             }
             .frame(maxWidth: .infinity)

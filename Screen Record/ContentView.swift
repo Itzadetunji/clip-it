@@ -60,7 +60,9 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(.systemBackground))
             .onAppear {
-                selectedDuration = stateService.getSaveDurationSeconds()
+                let stored = stateService.getSaveDurationSeconds()
+                selectedDuration = stored
+                stateService.setSaveDurationSeconds(stored) // Persist so Broadcast/Control Center use it
                 PHPhotoLibrary.requestAuthorization(for: .addOnly) { _ in }
                 recordingViewModel.startMonitoring()
             }
