@@ -18,6 +18,8 @@ struct ClipControlWidget: ControlWidget {
             }
         }
         .displayName("Save Clip")
-        .description("Save the last recorded seconds to Photos. Uses the duration you set in the app.")
+        .description(
+            "Save the last recorded seconds to Photos. Uses the duration you set in the app."
+        )
     }
 }

@@ -62,7 +62,7 @@ struct ContentView: View {
             .onAppear {
                 let stored = stateService.getSaveDurationSeconds()
                 selectedDuration = stored
-                stateService.setSaveDurationSeconds(stored) // Persist so Broadcast/Control Center use it
+                stateService.setSaveDurationSeconds(stored)  // Persist so Broadcast/Control Center use it
                 PHPhotoLibrary.requestAuthorization(for: .addOnly) { _ in }
                 recordingViewModel.startMonitoring()
             }
