@@ -9,7 +9,7 @@ import SwiftUI
 import WidgetKit
 
 struct ClipControlSaveWidget: ControlWidget {
-    static let kind = "com.adetunji.Screen-Record.ClipControl.Save"
+    static let kind = "com.adetunji.ClipIt.ClipControl.Save"
 
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: Self.kind) {

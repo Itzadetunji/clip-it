@@ -647,7 +647,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -695,7 +695,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -730,7 +730,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record.ClipIt";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipIt";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -762,7 +762,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record.ClipIt";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipIt";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -793,7 +793,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record.ClipItSetupUI";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipItSetupUI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -823,7 +823,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record.ClipItSetupUI";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipItSetupUI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -855,7 +855,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record.ClipControls";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipControls";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -884,7 +884,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record.ClipControls";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.ClipIt.ClipControls";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;

@@ -9,7 +9,7 @@ import ReplayKit
 import AVFoundation
 
 /// Records the full device screen when the user starts screen recording from Control Center.
-/// Requires App Group: group.com.adetunji.Screen-Record
+/// Requires App Group: group.com.adetunji.ClipIt
 class SampleHandler: RPBroadcastSampleHandler {
 
     private var assetWriter: AVAssetWriter?
@@ -20,7 +20,7 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
         guard let containerURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.com.adetunji.Screen-Record"
+            forSecurityApplicationGroupIdentifier: "group.com.adetunji.ClipIt"
         ) else {
             finishBroadcastWithError(NSError(domain: "SampleHandler", code: -1, userInfo: [NSLocalizedDescriptionKey: "App Group not configured"]))
             return

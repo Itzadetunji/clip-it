@@ -38,7 +38,7 @@ final class SampleHandler: RPBroadcastSampleHandler {
     private var isSavingClip = false
     private let saveStateLock = NSLock()
 
-    private let appGroupID = "group.com.adetunji.Screen-Record"
+    private let appGroupID = "group.com.adetunji.ClipIt"
     private let segmentDurationSeconds: Double = 1.0
     private let rollingWindowSeconds: Double = 60.0
 

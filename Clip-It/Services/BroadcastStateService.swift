@@ -10,7 +10,7 @@ import Foundation
 /// Shared state between the app process and the broadcast extension process.
 /// We store lightweight flags in App Group UserDefaults.
 struct BroadcastStateService {
-  private static let appGroupID = "group.com.adetunji.Screen-Record"
+  private static let appGroupID = "group.com.adetunji.ClipIt"
   private static let isRecordingKey = "broadcast.isRecording"
   private static let saveLast10SecondsKey = "broadcast.saveLast10Seconds"
   private static let saveDurationSecondsKey = "broadcast.saveDurationSeconds"

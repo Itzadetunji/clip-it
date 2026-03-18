@@ -9,7 +9,7 @@ import Foundation
 
 /// Shared state between the widget and Broadcast extension via App Group.
 /// Uses the same UserDefaults keys as BroadcastStateService for duration.
-private let appGroupID = "group.com.adetunji.Screen-Record"
+private let appGroupID = "group.com.adetunji.ClipIt"
 private let saveLastKey = "broadcast.saveLast10Seconds"
 private let saveDurationKey = "broadcast.saveDurationSeconds"
 

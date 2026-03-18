@@ -16,7 +16,7 @@ struct BroadcastPickerView: UIViewRepresentable {
   @Binding var trigger: Bool
 
   init(
-    preferredExtension: String? = "com.adetunji.Screen-Record.ClipIt",
+    preferredExtension: String? = "com.adetunji.ClipIt.ClipIt",
     trigger: Binding<Bool> = .constant(false)
   ) {
     self.preferredExtension = preferredExtension
