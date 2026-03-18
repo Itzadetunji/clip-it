@@ -29,6 +29,7 @@ struct Screen_RecordApp: App {
     // First app load cleanup:
     // if recording is currently inactive, clear old temporary clip files.
     broadcastStateService.removeSavedClipsIfNotRecording()
+    NotificationService.requestAuthorization()
   }
 
   var body: some Scene {

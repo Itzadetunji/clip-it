@@ -42,7 +42,8 @@ final class SampleHandler: RPBroadcastSampleHandler {
     private let segmentDurationSeconds: Double = 1.0
     private let rollingWindowSeconds: Double = 60.0
 
-    override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
+    override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?)
+    {
         stateService.setRecording(true)
         stateService.clearSaveRequest()
         stateService.setLastSaveError(nil)
@@ -93,7 +94,9 @@ final class SampleHandler: RPBroadcastSampleHandler {
                 }
             }
 
-            if sampleBufferType == .video, self.shouldRotateCurrentSegment(at: sampleTime) {
+            if sampleBufferType == .video,
+                self.shouldRotateCurrentSegment(at: sampleTime)
+            {
                 self.rotateToNewSegment()
             }
 
@@ -120,7 +123,9 @@ final class SampleHandler: RPBroadcastSampleHandler {
                 targetInput = nil
             }
 
-            guard let targetInput, targetInput.isReadyForMoreMediaData else { return }
+            guard let targetInput, targetInput.isReadyForMoreMediaData else {
+                return
+            }
             _ = targetInput.append(sampleCopy)
             self.currentSegmentLastTime = sampleTime
         }
@@ -183,7 +188,10 @@ final class SampleHandler: RPBroadcastSampleHandler {
             )
             try? FileManager.default.removeItem(at: fileURL)
             do {
-                currentWriter = try AVAssetWriter(outputURL: fileURL, fileType: .mp4)
+                currentWriter = try AVAssetWriter(
+                    outputURL: fileURL,
+                    fileType: .mp4
+                )
                 currentSegmentURL = fileURL
             } catch {
                 stateService.setLastSaveError(error.localizedDescription)
@@ -196,14 +204,21 @@ final class SampleHandler: RPBroadcastSampleHandler {
         switch sampleType {
         case .video:
             if currentVideoInput == nil {
-                guard let format = CMSampleBufferGetFormatDescription(sampleBuffer) else { return }
+                guard
+                    let format = CMSampleBufferGetFormatDescription(
+                        sampleBuffer
+                    )
+                else { return }
                 let dimensions = CMVideoFormatDescriptionGetDimensions(format)
                 let settings: [String: Any] = [
                     AVVideoCodecKey: AVVideoCodecType.h264,
                     AVVideoWidthKey: dimensions.width,
                     AVVideoHeightKey: dimensions.height,
                 ]
-                let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
+                let input = AVAssetWriterInput(
+                    mediaType: .video,
+                    outputSettings: settings
+                )
                 input.expectsMediaDataInRealTime = true
                 guard writer.canAdd(input) else { return }
                 writer.add(input)
@@ -216,7 +231,10 @@ final class SampleHandler: RPBroadcastSampleHandler {
                     AVSampleRateKey: 44_100,
                     AVNumberOfChannelsKey: 1,
                 ]
-                let input = AVAssetWriterInput(mediaType: .audio, outputSettings: settings)
+                let input = AVAssetWriterInput(
+                    mediaType: .audio,
+                    outputSettings: settings
+                )
                 input.expectsMediaDataInRealTime = true
                 if writer.canAdd(input) {
                     writer.add(input)
@@ -277,7 +295,9 @@ final class SampleHandler: RPBroadcastSampleHandler {
         }
     }
 
-    private func performSaveLast10Seconds(from snapshot: [SegmentMetadata]) async {
+    private func performSaveLast10Seconds(from snapshot: [SegmentMetadata])
+        async
+    {
         guard let latestSegment = snapshot.last else {
             stateService.setLastSaveError("Not enough recorded data yet.")
             setSaveInProgress(false)
@@ -302,9 +322,11 @@ final class SampleHandler: RPBroadcastSampleHandler {
             return
         }
 
-        guard let exportURL = savedClipsDirectoryURL()?.appendingPathComponent(
-            "Last10-\(Date().timeIntervalSince1970).mp4"
-        ) else {
+        guard
+            let exportURL = savedClipsDirectoryURL()?.appendingPathComponent(
+                "Last10-\(Date().timeIntervalSince1970).mp4"
+            )
+        else {
             stateService.setLastSaveError("Unable to prepare export path.")
             setSaveInProgress(false)
             return
@@ -322,7 +344,10 @@ final class SampleHandler: RPBroadcastSampleHandler {
                 throw NSError(
                     domain: "SampleHandler",
                     code: -20,
-                    userInfo: [NSLocalizedDescriptionKey: "Unable to create composition video track."]
+                    userInfo: [
+                        NSLocalizedDescriptionKey:
+                            "Unable to create composition video track."
+                    ]
                 )
             }
 
@@ -335,7 +360,9 @@ final class SampleHandler: RPBroadcastSampleHandler {
             for segment in selectedSegments {
                 let asset = AVURLAsset(url: segment.url)
                 let assetDuration = try await asset.load(.duration)
-                let assetVideoTracks = try await asset.loadTracks(withMediaType: .video)
+                let assetVideoTracks = try await asset.loadTracks(
+                    withMediaType: .video
+                )
                 if let sourceVideoTrack = assetVideoTracks.first {
                     try videoTrack.insertTimeRange(
                         CMTimeRange(start: .zero, duration: assetDuration),
@@ -345,7 +372,9 @@ final class SampleHandler: RPBroadcastSampleHandler {
                 }
 
                 if let audioTrack {
-                    let assetAudioTracks = try await asset.loadTracks(withMediaType: .audio)
+                    let assetAudioTracks = try await asset.loadTracks(
+                        withMediaType: .audio
+                    )
                     if let sourceAudioTrack = assetAudioTracks.first {
                         try audioTrack.insertTimeRange(
                             CMTimeRange(start: .zero, duration: assetDuration),
@@ -367,7 +396,10 @@ final class SampleHandler: RPBroadcastSampleHandler {
                 throw NSError(
                     domain: "SampleHandler",
                     code: -21,
-                    userInfo: [NSLocalizedDescriptionKey: "Unable to create export session."]
+                    userInfo: [
+                        NSLocalizedDescriptionKey:
+                            "Unable to create export session."
+                    ]
                 )
             }
 
@@ -417,16 +449,24 @@ final class SampleHandler: RPBroadcastSampleHandler {
             NSError(
                 domain: "SampleHandler",
                 code: -6,
-                userInfo: [NSLocalizedDescriptionKey: "Unable to save clip to Photos."]
+                userInfo: [
+                    NSLocalizedDescriptionKey: "Unable to save clip to Photos."
+                ]
             )
         )
         let semaphore = DispatchSemaphore(value: 0)
 
         PHPhotoLibrary.shared().performChanges({
-            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
+            PHAssetChangeRequest.creationRequestForAssetFromVideo(
+                atFileURL: url
+            )
         }) { success, error in
             if success {
                 result = .success(())
+                LocalNotificationHelper.send(
+                    title: "Clip Saved ✅",
+                    body: "Your clip has been saved to Photos."
+                )
             } else {
                 result = .failure(
                     error
@@ -439,11 +479,19 @@ final class SampleHandler: RPBroadcastSampleHandler {
                             ]
                         )
                 )
+                LocalNotificationHelper.send(
+                    title: "Clip Save Failed",
+                    body: "Unable to save clip to Photos."
+                )
             }
             semaphore.signal()
         }
 
         if semaphore.wait(timeout: .now() + 15) == .timedOut {
+            LocalNotificationHelper.send(
+                title: "Clip Save Failed",
+                body: "Unable to save clip to Photos."
+            )
             return .failure(
                 NSError(
                     domain: "SampleHandler",
@@ -453,8 +501,10 @@ final class SampleHandler: RPBroadcastSampleHandler {
                             "Saving clip to Photos timed out."
                     ]
                 )
+
             )
         }
+
         return result
     }
 
@@ -519,7 +569,9 @@ final class SampleHandler: RPBroadcastSampleHandler {
 
     // MARK: - Utilities
 
-    private func copySampleBuffer(_ sampleBuffer: CMSampleBuffer) -> CMSampleBuffer? {
+    private func copySampleBuffer(_ sampleBuffer: CMSampleBuffer)
+        -> CMSampleBuffer?
+    {
         var copy: CMSampleBuffer?
         let status = CMSampleBufferCreateCopy(
             allocator: kCFAllocatorDefault,

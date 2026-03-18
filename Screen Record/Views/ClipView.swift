@@ -4,6 +4,8 @@
 //
 //  Created by Adetunji Adeyinka on 18/03/2026.
 //
+
+import Photos
 import SwiftUI
 
 private let primaryColor = Color("PrimaryColor")
@@ -15,11 +17,15 @@ struct ClipView: View {
     @Binding var triggerRecordPicker: Bool
     let stateService: BroadcastStateService
 
+    @State var photosAccessDenied: Bool = false
+
     var body: some View {
         VStack(spacing: 24) {
             Spacer()
             Button {
-                triggerRecordPicker = true
+                checkPhotoAccess {
+                    triggerRecordPicker = true
+                }
             } label: {
                 Image(
                     systemName: recordingViewModel.isRecording
@@ -57,7 +63,9 @@ struct ClipView: View {
                 }
 
                 Button {
-                    recordingViewModel.requestSaveLast10Seconds()
+                    checkPhotoAccess {
+                        recordingViewModel.requestSaveLast10Seconds()
+                    }
                 } label: {
                     Text("Clip")
                         .font(SofiaFont.semiBold(size: 18))
@@ -85,7 +93,44 @@ struct ClipView: View {
                 .padding(.bottom, 48)
 
             Spacer()
+        }.alert(isPresented: $photosAccessDenied, content: getAlert)
+    }
+
+    /// Checks Photos access. If granted, runs the action. If denied, shows alert.
+    private func checkPhotoAccess(then performAction: @escaping () -> Void) {
+        let status = PHPhotoLibrary.authorizationStatus(for: .addOnly)
+
+        switch status {
+        case .authorized, .limited:
+            performAction()
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization(for: .addOnly) { newStatus in
+                Task { @MainActor in
+                    if newStatus == .authorized || newStatus == .limited {
+                        performAction()
+                    } else {
+                        photosAccessDenied = true
+                    }
+                }
+            }
+        case .denied, .restricted:
+            photosAccessDenied = true
+        @unknown default:
+            break
         }
+    }
+
+    private func getAlert() -> Alert {
+        Alert(
+            title: Text("Photos Access Required"),
+            message: Text("Clip-It needs access to save your clips to Photos. Please enable it in Settings."),
+            primaryButton: .default(Text("Open Settings")) {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            },
+            secondaryButton: .cancel()
+        )
     }
 }
 

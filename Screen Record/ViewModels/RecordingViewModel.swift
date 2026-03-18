@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Photos
 
 @Observable
 @MainActor

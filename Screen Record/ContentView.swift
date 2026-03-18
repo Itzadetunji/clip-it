@@ -8,6 +8,7 @@
 import Photos
 import ReplayKit
 import SwiftUI
+import UserNotifications
 
 private let primaryColor = Color("PrimaryColor")
 private let buttonCornerRadius: CGFloat = 32
