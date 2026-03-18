@@ -6,14 +6,91 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C4FA262F2F69956100717246 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA262E2F69956100717246 /* ReplayKit.framework */; };
+		C4FA26392F69956100717246 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA262E2F69956100717246 /* ReplayKit.framework */; };
+		C4FA263B2F69956100717246 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA263A2F69956100717246 /* UIKit.framework */; };
+		C4FA26422F69956100717246 /* BroadcastSetupUI.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C4FA26382F69956100717246 /* BroadcastSetupUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C4FA26452F69956100717246 /* Broadcast.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C4FA262C2F69956100717246 /* Broadcast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C4FA26402F69956100717246 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C4FA25FE2F69715600717246 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C4FA26372F69956100717246;
+			remoteInfo = BroadcastSetupUI;
+		};
+		C4FA26432F69956100717246 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C4FA25FE2F69715600717246 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C4FA262B2F69956100717246;
+			remoteInfo = Broadcast;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C4FA264E2F69956100717246 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C4FA26452F69956100717246 /* Broadcast.appex in Embed Foundation Extensions */,
+				C4FA26422F69956100717246 /* BroadcastSetupUI.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		C4FA26062F69715600717246 /* Screen Record.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Screen Record.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4FA262C2F69956100717246 /* Broadcast.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Broadcast.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4FA262E2F69956100717246 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
+		C4FA26382F69956100717246 /* BroadcastSetupUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BroadcastSetupUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4FA263A2F69956100717246 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C4FA26462F69956100717246 /* Exceptions for "Broadcast" folder in "Broadcast" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C4FA262B2F69956100717246 /* Broadcast */;
+		};
+		C4FA264A2F69956100717246 /* Exceptions for "BroadcastSetupUI" folder in "BroadcastSetupUI" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C4FA26372F69956100717246 /* BroadcastSetupUI */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C4FA26082F69715600717246 /* Screen Record */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Screen Record";
+			sourceTree = "<group>";
+		};
+		C4FA26302F69956100717246 /* Broadcast */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C4FA26462F69956100717246 /* Exceptions for "Broadcast" folder in "Broadcast" target */,
+			);
+			path = Broadcast;
+			sourceTree = "<group>";
+		};
+		C4FA263C2F69956100717246 /* BroadcastSetupUI */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C4FA264A2F69956100717246 /* Exceptions for "BroadcastSetupUI" folder in "BroadcastSetupUI" target */,
+			);
+			path = BroadcastSetupUI;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -26,6 +103,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C4FA26292F69956100717246 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4FA262F2F69956100717246 /* ReplayKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C4FA26352F69956100717246 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4FA26392F69956100717246 /* ReplayKit.framework in Frameworks */,
+				C4FA263B2F69956100717246 /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -33,6 +127,9 @@
 			isa = PBXGroup;
 			children = (
 				C4FA26082F69715600717246 /* Screen Record */,
+				C4FA26302F69956100717246 /* Broadcast */,
+				C4FA263C2F69956100717246 /* BroadcastSetupUI */,
+				C4FA262D2F69956100717246 /* Frameworks */,
 				C4FA26072F69715600717246 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,8 +138,19 @@
 			isa = PBXGroup;
 			children = (
 				C4FA26062F69715600717246 /* Screen Record.app */,
+				C4FA262C2F69956100717246 /* Broadcast.appex */,
+				C4FA26382F69956100717246 /* BroadcastSetupUI.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C4FA262D2F69956100717246 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C4FA262E2F69956100717246 /* ReplayKit.framework */,
+				C4FA263A2F69956100717246 /* UIKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -55,10 +163,13 @@
 				C4FA26022F69715600717246 /* Sources */,
 				C4FA26032F69715600717246 /* Frameworks */,
 				C4FA26042F69715600717246 /* Resources */,
+				C4FA264E2F69956100717246 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C4FA26412F69956100717246 /* PBXTargetDependency */,
+				C4FA26442F69956100717246 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C4FA26082F69715600717246 /* Screen Record */,
@@ -69,6 +180,50 @@
 			productName = "Screen Record";
 			productReference = C4FA26062F69715600717246 /* Screen Record.app */;
 			productType = "com.apple.product-type.application";
+		};
+		C4FA262B2F69956100717246 /* Broadcast */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C4FA26472F69956100717246 /* Build configuration list for PBXNativeTarget "Broadcast" */;
+			buildPhases = (
+				C4FA26282F69956100717246 /* Sources */,
+				C4FA26292F69956100717246 /* Frameworks */,
+				C4FA262A2F69956100717246 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C4FA26302F69956100717246 /* Broadcast */,
+			);
+			name = Broadcast;
+			packageProductDependencies = (
+			);
+			productName = Broadcast;
+			productReference = C4FA262C2F69956100717246 /* Broadcast.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		C4FA26372F69956100717246 /* BroadcastSetupUI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C4FA264B2F69956100717246 /* Build configuration list for PBXNativeTarget "BroadcastSetupUI" */;
+			buildPhases = (
+				C4FA26342F69956100717246 /* Sources */,
+				C4FA26352F69956100717246 /* Frameworks */,
+				C4FA26362F69956100717246 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C4FA263C2F69956100717246 /* BroadcastSetupUI */,
+			);
+			name = BroadcastSetupUI;
+			packageProductDependencies = (
+			);
+			productName = BroadcastSetupUI;
+			productReference = C4FA26382F69956100717246 /* BroadcastSetupUI.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +236,12 @@
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					C4FA26052F69715600717246 = {
+						CreatedOnToolsVersion = 26.1.1;
+					};
+					C4FA262B2F69956100717246 = {
+						CreatedOnToolsVersion = 26.1.1;
+					};
+					C4FA26372F69956100717246 = {
 						CreatedOnToolsVersion = 26.1.1;
 					};
 				};
@@ -100,12 +261,28 @@
 			projectRoot = "";
 			targets = (
 				C4FA26052F69715600717246 /* Screen Record */,
+				C4FA262B2F69956100717246 /* Broadcast */,
+				C4FA26372F69956100717246 /* BroadcastSetupUI */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C4FA26042F69715600717246 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C4FA262A2F69956100717246 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C4FA26362F69956100717246 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +299,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C4FA26282F69956100717246 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C4FA26342F69956100717246 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C4FA26412F69956100717246 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C4FA26372F69956100717246 /* BroadcastSetupUI */;
+			targetProxy = C4FA26402F69956100717246 /* PBXContainerItemProxy */;
+		};
+		C4FA26442F69956100717246 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C4FA262B2F69956100717246 /* Broadcast */;
+			targetProxy = C4FA26432F69956100717246 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		C4FA26112F69715700717246 /* Debug */ = {
@@ -247,6 +451,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = "Screen Record/Screen Record.entitlements";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
 				ENABLE_APP_SANDBOX = YES;
@@ -254,6 +459,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save screen recordings to your Photos library.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -291,6 +497,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = "Screen Record/Screen Record.entitlements";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
 				ENABLE_APP_SANDBOX = YES;
@@ -298,6 +505,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save screen recordings to your Photos library.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -329,6 +537,132 @@
 			};
 			name = Release;
 		};
+		C4FA26482F69956100717246 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = Broadcast/Broadcast.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Broadcast/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Broadcast;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save 10-second clips to your Photos library.";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record.Broadcast";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C4FA26492F69956100717246 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = Broadcast/Broadcast.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Broadcast/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Broadcast;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save 10-second clips to your Photos library.";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record.Broadcast";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C4FA264C2F69956100717246 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BroadcastSetupUI/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BroadcastSetupUI;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record.BroadcastSetupUI";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C4FA264D2F69956100717246 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BroadcastSetupUI/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BroadcastSetupUI;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adetunji.Screen-Record.BroadcastSetupUI";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -346,6 +680,24 @@
 			buildConfigurations = (
 				C4FA26142F69715700717246 /* Debug */,
 				C4FA26152F69715700717246 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C4FA26472F69956100717246 /* Build configuration list for PBXNativeTarget "Broadcast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4FA26482F69956100717246 /* Debug */,
+				C4FA26492F69956100717246 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C4FA264B2F69956100717246 /* Build configuration list for PBXNativeTarget "BroadcastSetupUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4FA264C2F69956100717246 /* Debug */,
+				C4FA264D2F69956100717246 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

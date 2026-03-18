@@ -5,62 +5,101 @@
 //  Created by Adetunji Adeyinka on 17/03/2026.
 //
 
+import ReplayKit
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+  @State private var recordingViewModel = RecordingViewModel()
 
-    var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
-            }
-#if os(macOS)
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-#endif
-            .toolbar {
-#if os(iOS)
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-#endif
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
-        }
-    }
+  var body: some View {
+    NavigationStack {
+      VStack(spacing: 24) {
+        Text("Screen Record")
+          .font(.title)
+          .fontWeight(.bold)
+          .padding(.top, 24)
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
+        Text("Record your entire screen")
+          .font(.subheadline)
+          .foregroundStyle(.secondary)
+          .multilineTextAlignment(.center)
+          .padding(.horizontal)
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+        Spacer()
+
+        VStack(spacing: 20) {
+          Text("1. Tap the green button below")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+          ZStack {
+            RoundedRectangle(cornerRadius: 14)
+              .fill(Color.green)
+              .frame(width: 120, height: 120)
+
+            BroadcastPickerView()
+              .frame(width: 120, height: 120)
+          }
+
+          VStack(spacing: 8) {
+            Text("2. A list will appear — choose \"Screen Recording\" to save to Photos")
+              .font(.subheadline)
+              .foregroundStyle(.secondary)
+              .multilineTextAlignment(.center)
+          }
+
+          Text("3. Open Control Center (swipe down from top-right) and tap the record button")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+
+          Text("4. Tap the red status bar when done to stop")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+
+          Button("Save") {
+            recordingViewModel.requestSaveLast10Seconds()
+          }
+          .buttonStyle(.borderedProminent)
+          .disabled(!recordingViewModel.isRecording)
+
+          Text(recordingViewModel.isRecording
+            ? "Recording is active. Tap Save to export only the last 10 seconds."
+            : "Start a screen recording first, then Save becomes available.")
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+
+          if let saveStatusMessage = recordingViewModel.saveStatusMessage {
+            Text(saveStatusMessage)
+              .font(.caption2)
+              .foregroundStyle(recordingViewModel.saveStatusIsError ? .red : .green)
+              .multilineTextAlignment(.center)
+          }
+
+          Text("Recordings will be saved to your Photos app (Camera Roll)")
+            .font(.caption2)
+            .foregroundStyle(.tertiary)
+            .multilineTextAlignment(.center)
         }
+        .padding(.horizontal, 24)
+        .padding(.bottom, 48)
+
+        Spacer()
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .background(Color(.systemBackground))
+      .onAppear {
+        recordingViewModel.startMonitoring()
+      }
+      .onDisappear {
+        recordingViewModel.stopMonitoring()
+      }
     }
+  }
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+  ContentView()
 }
