@@ -12,13 +12,26 @@ import SwiftUI
 struct ContentView: View {
   @State private var recordingViewModel = RecordingViewModel()
 
+    init(){
+        for familyName in UIFont.familyNames
+        {
+            print(familyName)
+            for fontName in UIFont.fontNames(forFamilyName: familyName)
+            {
+                print("-- \(fontName)")
+            }
+        }
+    }
+
   var body: some View {
     NavigationStack {
       VStack(spacing: 24) {
         Text("Screen Record")
-          .font(.title)
+//              .font(.custom("Sofia Pro", size: <#T##CGFloat#>))
+
           .fontWeight(.bold)
           .padding(.top, 24)
+          .multilineTextAlignment(.trailing)
 
         Text("Record your entire screen")
           .font(.subheadline)
