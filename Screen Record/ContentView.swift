@@ -27,22 +27,22 @@ struct ContentView: View {
             .font(SofiaFont.bold(size: 28))
 
           Spacer()
-          NavigationLink {
-            ProView()
-          } label: {
-            Text("Go Pro")
-              .font(SofiaFont.semiBold(size: 18))
-              .foregroundColor(.white)
-              .padding(.horizontal, 16)
-              .padding(.vertical, 10)
-              .background(primaryColor)
-              .clipShape(
-                RoundedRectangle(
-                  cornerRadius: buttonCornerRadius
-                )
-              )
-          }
-          .buttonStyle(.plain)
+//          NavigationLink {
+//            ProView()
+//          } label: {
+//            Text("Go Pro")
+//              .font(SofiaFont.semiBold(size: 18))
+//              .foregroundColor(.white)
+//              .padding(.horizontal, 16)
+//              .padding(.vertical, 10)
+//              .background(primaryColor)
+//              .clipShape(
+//                RoundedRectangle(
+//                  cornerRadius: buttonCornerRadius
+//                )
+//              )
+//          }
+//          .buttonStyle(.plain)
         }
         .padding(.horizontal, 24)
         .padding(.top, 24)

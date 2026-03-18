@@ -9,6 +9,8 @@ import Photos
 import SwiftUI
 
 private let primaryColor = Color("PrimaryColor")
+private let recordingColor = Color(red: 0.95, green: 0.35, blue: 0.28)
+
 private let buttonCornerRadius: CGFloat = 32
 
 struct ClipView: View {
@@ -32,14 +34,15 @@ struct ClipView: View {
                         ? "stop.circle.fill" : "largecircle.fill.circle"
                 )
                 .font(.system(size: 64))
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .contentTransition(.symbolEffect(.replace))
+                .symbolEffect(.pulse, options: .repeating, value: recordingViewModel.isRecording)
                 .animation(
                     .easeInOut(duration: 0.3),
                     value: recordingViewModel.isRecording
                 )
                 .frame(width: 120, height: 120)
-                .background(primaryColor)
+                .background(recordingViewModel.isRecording ? recordingColor : primaryColor)
                 .clipShape(RoundedRectangle(cornerRadius: 24))
             }
             .buttonStyle(.plain)
