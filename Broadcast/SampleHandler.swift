@@ -10,23 +10,50 @@ import Photos
 import ReplayKit
 
 /// Broadcast extension entry point.
-/// Writes the stream to a file. On Save, finishes the file, exports last 10 seconds to Photos, then starts a new file.
+/// Implements a PS4-style rolling buffer with 1-second segments.
+/// Recording stays continuous; Save exports the most recent 10 seconds.
 final class SampleHandler: RPBroadcastSampleHandler {
     private let stateService = BroadcastStateService()
+    private let segmentQueue = DispatchQueue(
+        label: "com.adetunji.ScreenRecord.segment-queue"
+    )
+    private let saveQueue = DispatchQueue(
+        label: "com.adetunji.ScreenRecord.save-queue"
+    )
 
-    private var assetWriter: AVAssetWriter?
-    private var videoInput: AVAssetWriterInput?
-    private var audioInput: AVAssetWriterInput?
-    private var outputURL: URL?
-    private var sessionStarted = false
+    private struct SegmentMetadata {
+        let url: URL
+        let startTime: CMTime
+        let endTime: CMTime
+    }
+
+    private var segments: [SegmentMetadata] = []
+    private var currentWriter: AVAssetWriter?
+    private var currentVideoInput: AVAssetWriterInput?
+    private var currentAudioInput: AVAssetWriterInput?
+    private var currentSegmentURL: URL?
+    private var currentSegmentStartTime: CMTime?
+    private var currentSegmentLastTime: CMTime?
+
     private var isSavingClip = false
+    private let saveStateLock = NSLock()
+
     private let appGroupID = "group.com.adetunji.Screen-Record"
+    private let segmentDurationSeconds: Double = 1.0
+    private let saveWindowSeconds: Double = 10.0
+    private let rollingWindowSeconds: Double = 20.0
 
     override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
         stateService.setRecording(true)
         stateService.clearSaveRequest()
         stateService.setLastSaveError(nil)
-        prepareMainWriter()
+        stateService.setLastSaveSucceeded(false)
+        segmentQueue.async {
+            self.segments.removeAll()
+            self.resetCurrentSegmentWriter()
+            self.removeAllRollingSegments()
+            self.ensureDirectories()
+        }
     }
 
     override func broadcastPaused() {}
@@ -36,9 +63,13 @@ final class SampleHandler: RPBroadcastSampleHandler {
     override func broadcastFinished() {
         stateService.setRecording(false)
         stateService.clearSaveRequest()
+        stateService.setLastSaveSucceeded(false)
         stateService.removeAllSavedClips()
-        finishCurrentWriter {
-            self.resetWriterState()
+        segmentQueue.sync {
+            self.finishCurrentSegmentAndRegisterIfPossible()
+            self.resetCurrentSegmentWriter()
+            self.removeAllRollingSegments()
+            self.segments.removeAll()
         }
     }
 
@@ -46,156 +77,318 @@ final class SampleHandler: RPBroadcastSampleHandler {
         _ sampleBuffer: CMSampleBuffer,
         with sampleBufferType: RPSampleBufferType
     ) {
-        if stateService.shouldSaveLast10Seconds() && !isSavingClip {
-            stateService.clearSaveRequest()
-            handleSaveLast10SecondsRequest()
+        guard sampleBufferType == .video || sampleBufferType == .audioApp else {
+            return
         }
 
-        guard !isSavingClip else { return }
-        guard let assetWriter else { return }
+        guard let sampleCopy = copySampleBuffer(sampleBuffer) else { return }
+        let sampleTime = CMSampleBufferGetPresentationTimeStamp(sampleCopy)
 
-        switch sampleBufferType {
+        segmentQueue.async {
+            if self.stateService.shouldSaveLast10Seconds() {
+                self.stateService.clearSaveRequest()
+                if self.currentSaveInProgress() {
+                    // Requested behavior: ignore taps while save is already running.
+                } else {
+                    self.startSaveFromCurrentSegments()
+                }
+            }
+
+            if sampleBufferType == .video, self.shouldRotateCurrentSegment(at: sampleTime) {
+                self.rotateToNewSegment()
+            }
+
+            self.ensureCurrentWriterConfigured(
+                for: sampleCopy,
+                sampleType: sampleBufferType
+            )
+
+            guard let writer = self.currentWriter else { return }
+
+            if self.currentSegmentStartTime == nil {
+                writer.startWriting()
+                writer.startSession(atSourceTime: sampleTime)
+                self.currentSegmentStartTime = sampleTime
+            }
+
+            let targetInput: AVAssetWriterInput?
+            switch sampleBufferType {
+            case .video:
+                targetInput = self.currentVideoInput
+            case .audioApp:
+                targetInput = self.currentAudioInput
+            default:
+                targetInput = nil
+            }
+
+            guard let targetInput, targetInput.isReadyForMoreMediaData else { return }
+            _ = targetInput.append(sampleCopy)
+            self.currentSegmentLastTime = sampleTime
+        }
+    }
+
+    // MARK: - Segment Rotation
+
+    private func shouldRotateCurrentSegment(at sampleTime: CMTime) -> Bool {
+        guard let start = currentSegmentStartTime else { return false }
+        let elapsed = CMTimeSubtract(sampleTime, start)
+        return CMTimeGetSeconds(elapsed) >= segmentDurationSeconds
+    }
+
+    private func rotateToNewSegment() {
+        finishCurrentSegmentAndRegisterIfPossible()
+        resetCurrentSegmentWriter()
+    }
+
+    private func finishCurrentSegmentAndRegisterIfPossible() {
+        guard
+            let writer = currentWriter,
+            let videoInput = currentVideoInput,
+            let segmentURL = currentSegmentURL,
+            let segmentStart = currentSegmentStartTime,
+            let segmentEnd = currentSegmentLastTime
+        else {
+            resetCurrentSegmentWriter()
+            return
+        }
+
+        videoInput.markAsFinished()
+        currentAudioInput?.markAsFinished()
+
+        let semaphore = DispatchSemaphore(value: 0)
+        writer.finishWriting {
+            semaphore.signal()
+        }
+        _ = semaphore.wait(timeout: .now() + 5)
+
+        if FileManager.default.fileExists(atPath: segmentURL.path) {
+            segments.append(
+                SegmentMetadata(
+                    url: segmentURL,
+                    startTime: segmentStart,
+                    endTime: segmentEnd
+                )
+            )
+            pruneOldSegments(referenceTime: segmentEnd)
+        }
+    }
+
+    private func ensureCurrentWriterConfigured(
+        for sampleBuffer: CMSampleBuffer,
+        sampleType: RPSampleBufferType
+    ) {
+        if currentWriter == nil {
+            guard let rollingURL = rollingSegmentsDirectoryURL() else { return }
+            let fileURL = rollingURL.appendingPathComponent(
+                "Segment-\(Date().timeIntervalSince1970).mp4"
+            )
+            try? FileManager.default.removeItem(at: fileURL)
+            do {
+                currentWriter = try AVAssetWriter(outputURL: fileURL, fileType: .mp4)
+                currentSegmentURL = fileURL
+            } catch {
+                stateService.setLastSaveError(error.localizedDescription)
+                return
+            }
+        }
+
+        guard let writer = currentWriter else { return }
+
+        switch sampleType {
         case .video:
-            if videoInput == nil {
-                guard let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer) else { return }
-                let dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription)
-                let videoSettings: [String: Any] = [
+            if currentVideoInput == nil {
+                guard let format = CMSampleBufferGetFormatDescription(sampleBuffer) else { return }
+                let dimensions = CMVideoFormatDescriptionGetDimensions(format)
+                let settings: [String: Any] = [
                     AVVideoCodecKey: AVVideoCodecType.h264,
                     AVVideoWidthKey: dimensions.width,
                     AVVideoHeightKey: dimensions.height,
                 ]
-                let input = AVAssetWriterInput(mediaType: .video, outputSettings: videoSettings)
+                let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
                 input.expectsMediaDataInRealTime = true
-                guard assetWriter.canAdd(input) else { return }
-                assetWriter.add(input)
-                videoInput = input
+                guard writer.canAdd(input) else { return }
+                writer.add(input)
+                currentVideoInput = input
             }
-
-            if !sessionStarted {
-                let timestamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-                assetWriter.startWriting()
-                assetWriter.startSession(atSourceTime: timestamp)
-                sessionStarted = true
-            }
-
-            if let videoInput, videoInput.isReadyForMoreMediaData {
-                videoInput.append(sampleBuffer)
-            }
-
         case .audioApp:
-            if audioInput == nil {
-                let audioSettings: [String: Any] = [
+            if currentAudioInput == nil {
+                let settings: [String: Any] = [
                     AVFormatIDKey: kAudioFormatMPEG4AAC,
                     AVSampleRateKey: 44_100,
                     AVNumberOfChannelsKey: 1,
                 ]
-                let input = AVAssetWriterInput(mediaType: .audio, outputSettings: audioSettings)
+                let input = AVAssetWriterInput(mediaType: .audio, outputSettings: settings)
                 input.expectsMediaDataInRealTime = true
-                if assetWriter.canAdd(input) {
-                    assetWriter.add(input)
-                    audioInput = input
+                if writer.canAdd(input) {
+                    writer.add(input)
+                    currentAudioInput = input
                 }
             }
-
-            if let audioInput, audioInput.isReadyForMoreMediaData {
-                audioInput.append(sampleBuffer)
-            }
-
-        case .audioMic:
-            break
-
-        @unknown default:
+        default:
             break
         }
     }
 
-    // MARK: - Clip Saving
+    private func pruneOldSegments(referenceTime: CMTime) {
+        let cutoff = CMTimeSubtract(
+            referenceTime,
+            CMTime(seconds: rollingWindowSeconds, preferredTimescale: 600)
+        )
+        var kept: [SegmentMetadata] = []
+        for segment in segments {
+            if CMTimeCompare(segment.endTime, cutoff) < 0 {
+                try? FileManager.default.removeItem(at: segment.url)
+            } else {
+                kept.append(segment)
+            }
+        }
+        segments = kept.sorted { CMTimeCompare($0.startTime, $1.startTime) < 0 }
+    }
 
-    private func handleSaveLast10SecondsRequest() {
-        guard !isSavingClip else { return }
-        guard sessionStarted else {
-            stateService.setLastSaveError("Recording has not started yet.")
+    private func resetCurrentSegmentWriter() {
+        currentWriter = nil
+        currentVideoInput = nil
+        currentAudioInput = nil
+        currentSegmentURL = nil
+        currentSegmentStartTime = nil
+        currentSegmentLastTime = nil
+    }
+
+    // MARK: - Save Workflow
+
+    private func startSaveFromCurrentSegments() {
+        let snapshot = segments.sorted {
+            CMTimeCompare($0.startTime, $1.startTime) < 0
+        }
+        guard !snapshot.isEmpty else {
+            stateService.setLastSaveError("Not enough recorded data yet.")
+            stateService.setLastSaveSucceeded(false)
             return
         }
 
-        isSavingClip = true
+        setSaveInProgress(true)
         stateService.setLastSaveError(nil)
+        stateService.setLastSaveSucceeded(false)
 
-        let sourceURL = outputURL
-        finishCurrentWriter { [weak self] in
-            guard let self, let sourceURL else {
-                self?.stateService.setLastSaveError("No recording segment available to save.")
-                self?.prepareMainWriter()
-                self?.isSavingClip = false
-                return
-            }
-
+        saveQueue.async { [weak self] in
+            guard let self else { return }
             Task {
-                do {
-                    let duration = try await AVURLAsset(url: sourceURL).load(.duration)
-                    let durationSeconds = CMTimeGetSeconds(duration)
-                    let clipLengthSeconds = max(0, min(10, durationSeconds))
-
-                    guard clipLengthSeconds > 0 else {
-                        self.stateService.setLastSaveError("Not enough recorded data yet.")
-                        self.prepareMainWriter()
-                        self.isSavingClip = false
-                        return
-                    }
-
-                    guard let exportSession = AVAssetExportSession(
-                        asset: AVURLAsset(url: sourceURL),
-                        presetName: AVAssetExportPresetPassthrough
-                    ) else {
-                        self.stateService.setLastSaveError("Failed to create export session.")
-                        self.prepareMainWriter()
-                        self.isSavingClip = false
-                        return
-                    }
-
-                    guard let containerURL = FileManager.default.containerURL(
-                        forSecurityApplicationGroupIdentifier: self.appGroupID
-                    ) else {
-                        self.stateService.setLastSaveError("App Group not configured.")
-                        self.prepareMainWriter()
-                        self.isSavingClip = false
-                        return
-                    }
-
-                    let clipsURL = containerURL.appendingPathComponent("SavedClips", isDirectory: true)
-                    try? FileManager.default.createDirectory(at: clipsURL, withIntermediateDirectories: true)
-                    let exportURL = clipsURL.appendingPathComponent("Last10-\(Date().timeIntervalSince1970).mp4")
-                    try? FileManager.default.removeItem(at: exportURL)
-
-                    let endTime = duration
-                    let startSeconds = max(0, durationSeconds - clipLengthSeconds)
-                    let startTime = CMTime(seconds: startSeconds, preferredTimescale: 600)
-                    let timeRange = CMTimeRangeFromTimeToTime(start: startTime, end: endTime)
-
-                    exportSession.outputURL = exportURL
-                    exportSession.outputFileType = .mp4
-                    exportSession.timeRange = timeRange
-
-                    try await exportSession.export(to: exportURL, as: .mp4)
-
-                    let saveResult = self.saveVideoToPhotosSync(url: exportURL)
-                    switch saveResult {
-                    case .success:
-                        self.stateService.setLastSaveError(nil)
-                        self.stateService.setLastSaveSucceeded(true)
-                        try? FileManager.default.removeItem(at: exportURL)
-                    case .failure(let error):
-                        self.stateService.setLastSaveError(error.localizedDescription)
-                    }
-
-                    self.prepareMainWriter()
-                } catch {
-                    self.stateService.setLastSaveError(error.localizedDescription)
-                    self.prepareMainWriter()
-                }
-                self.isSavingClip = false
+                await self.performSaveLast10Seconds(from: snapshot)
             }
         }
+    }
+
+    private func performSaveLast10Seconds(from snapshot: [SegmentMetadata]) async {
+        guard let latestSegment = snapshot.last else {
+            stateService.setLastSaveError("Not enough recorded data yet.")
+            setSaveInProgress(false)
+            return
+        }
+
+        let windowEnd = latestSegment.endTime
+        let windowStart = CMTimeSubtract(
+            windowEnd,
+            CMTime(seconds: saveWindowSeconds, preferredTimescale: 600)
+        )
+
+        let selectedSegments = snapshot.filter { segment in
+            CMTimeCompare(segment.endTime, windowStart) > 0
+                && CMTimeCompare(segment.startTime, windowEnd) < 0
+        }
+
+        guard !selectedSegments.isEmpty else {
+            stateService.setLastSaveError("Not enough recorded data yet.")
+            setSaveInProgress(false)
+            return
+        }
+
+        guard let exportURL = savedClipsDirectoryURL()?.appendingPathComponent(
+            "Last10-\(Date().timeIntervalSince1970).mp4"
+        ) else {
+            stateService.setLastSaveError("Unable to prepare export path.")
+            setSaveInProgress(false)
+            return
+        }
+        try? FileManager.default.removeItem(at: exportURL)
+
+        do {
+            let composition = AVMutableComposition()
+            guard
+                let videoTrack = composition.addMutableTrack(
+                    withMediaType: .video,
+                    preferredTrackID: kCMPersistentTrackID_Invalid
+                )
+            else {
+                throw NSError(
+                    domain: "SampleHandler",
+                    code: -20,
+                    userInfo: [NSLocalizedDescriptionKey: "Unable to create composition video track."]
+                )
+            }
+
+            let audioTrack = composition.addMutableTrack(
+                withMediaType: .audio,
+                preferredTrackID: kCMPersistentTrackID_Invalid
+            )
+
+            var insertionTime = CMTime.zero
+            for segment in selectedSegments {
+                let asset = AVURLAsset(url: segment.url)
+                let assetDuration = try await asset.load(.duration)
+                let assetVideoTracks = try await asset.loadTracks(withMediaType: .video)
+                if let sourceVideoTrack = assetVideoTracks.first {
+                    try videoTrack.insertTimeRange(
+                        CMTimeRange(start: .zero, duration: assetDuration),
+                        of: sourceVideoTrack,
+                        at: insertionTime
+                    )
+                }
+
+                if let audioTrack {
+                    let assetAudioTracks = try await asset.loadTracks(withMediaType: .audio)
+                    if let sourceAudioTrack = assetAudioTracks.first {
+                        try audioTrack.insertTimeRange(
+                            CMTimeRange(start: .zero, duration: assetDuration),
+                            of: sourceAudioTrack,
+                            at: insertionTime
+                        )
+                    }
+                }
+
+                insertionTime = CMTimeAdd(insertionTime, assetDuration)
+            }
+
+            guard
+                let exportSession = AVAssetExportSession(
+                    asset: composition,
+                    presetName: AVAssetExportPresetPassthrough
+                )
+            else {
+                throw NSError(
+                    domain: "SampleHandler",
+                    code: -21,
+                    userInfo: [NSLocalizedDescriptionKey: "Unable to create export session."]
+                )
+            }
+
+            try await exportSession.export(to: exportURL, as: .mp4)
+
+            let saveResult = saveVideoToPhotosSync(url: exportURL)
+            switch saveResult {
+            case .success:
+                stateService.setLastSaveError(nil)
+                stateService.setLastSaveSucceeded(true)
+                try? FileManager.default.removeItem(at: exportURL)
+            case .failure(let error):
+                stateService.setLastSaveError(error.localizedDescription)
+                stateService.setLastSaveSucceeded(false)
+            }
+        } catch {
+            stateService.setLastSaveError(error.localizedDescription)
+            stateService.setLastSaveSucceeded(false)
+        }
+
+        setSaveInProgress(false)
     }
 
     private func saveVideoToPhotosSync(url: URL) -> Result<Void, Error> {
@@ -212,13 +405,20 @@ final class SampleHandler: RPBroadcastSampleHandler {
                 NSError(
                     domain: "SampleHandler",
                     code: -11,
-                    userInfo: [NSLocalizedDescriptionKey: "Photo Library access is required. Enable it in Settings."]
+                    userInfo: [
+                        NSLocalizedDescriptionKey:
+                            "Photo Library access is required. Enable it in Settings."
+                    ]
                 )
             )
         }
 
         var result: Result<Void, Error> = .failure(
-            NSError(domain: "SampleHandler", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unable to save clip to Photos."])
+            NSError(
+                domain: "SampleHandler",
+                code: -6,
+                userInfo: [NSLocalizedDescriptionKey: "Unable to save clip to Photos."]
+            )
         )
         let semaphore = DispatchSemaphore(value: 0)
 
@@ -228,60 +428,118 @@ final class SampleHandler: RPBroadcastSampleHandler {
             if success {
                 result = .success(())
             } else {
-                result = .failure(error ?? NSError(domain: "SampleHandler", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unable to save clip to Photos."]))
+                result = .failure(
+                    error
+                        ?? NSError(
+                            domain: "SampleHandler",
+                            code: -6,
+                            userInfo: [
+                                NSLocalizedDescriptionKey:
+                                    "Unable to save clip to Photos."
+                            ]
+                        )
+                )
             }
             semaphore.signal()
         }
 
         if semaphore.wait(timeout: .now() + 15) == .timedOut {
-            return .failure(NSError(domain: "SampleHandler", code: -7, userInfo: [NSLocalizedDescriptionKey: "Saving clip to Photos timed out."]))
+            return .failure(
+                NSError(
+                    domain: "SampleHandler",
+                    code: -7,
+                    userInfo: [
+                        NSLocalizedDescriptionKey:
+                            "Saving clip to Photos timed out."
+                    ]
+                )
+            )
         }
         return result
     }
 
-    // MARK: - Main Writer Helpers
+    // MARK: - Path Helpers
 
-    private func prepareMainWriter() {
-        resetWriterState()
+    private func ensureDirectories() {
+        _ = rollingSegmentsDirectoryURL()
+        _ = savedClipsDirectoryURL()
+    }
 
-        guard let containerURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: appGroupID
-        ) else {
-            finishBroadcastWithError(NSError(domain: "SampleHandler", code: -1, userInfo: [NSLocalizedDescriptionKey: "App Group not configured"]))
-            return
+    private func rollingSegmentsDirectoryURL() -> URL? {
+        guard
+            let container = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: appGroupID
+            )
+        else {
+            stateService.setLastSaveError("App Group not configured.")
+            return nil
         }
+        let rollingURL = container.appendingPathComponent(
+            "RollingSegments",
+            isDirectory: true
+        )
+        try? FileManager.default.createDirectory(
+            at: rollingURL,
+            withIntermediateDirectories: true
+        )
+        return rollingURL
+    }
 
-        let recordingsURL = containerURL.appendingPathComponent("Recordings", isDirectory: true)
-        try? FileManager.default.createDirectory(at: recordingsURL, withIntermediateDirectories: true)
-        let fileName = "Recording-\(Date().timeIntervalSince1970).mp4"
-        let newOutputURL = recordingsURL.appendingPathComponent(fileName)
+    private func savedClipsDirectoryURL() -> URL? {
+        guard
+            let container = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: appGroupID
+            )
+        else {
+            stateService.setLastSaveError("App Group not configured.")
+            return nil
+        }
+        let clipsURL = container.appendingPathComponent(
+            "SavedClips",
+            isDirectory: true
+        )
+        try? FileManager.default.createDirectory(
+            at: clipsURL,
+            withIntermediateDirectories: true
+        )
+        return clipsURL
+    }
 
-        do {
-            assetWriter = try AVAssetWriter(outputURL: newOutputURL, fileType: .mp4)
-            outputURL = newOutputURL
-            sessionStarted = false
-        } catch {
-            finishBroadcastWithError(error as NSError)
+    private func removeAllRollingSegments() {
+        guard let directory = rollingSegmentsDirectoryURL() else { return }
+        if let files = try? FileManager.default.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: nil
+        ) {
+            for file in files {
+                try? FileManager.default.removeItem(at: file)
+            }
         }
     }
 
-    private func finishCurrentWriter(completion: @escaping () -> Void) {
-        guard let assetWriter else {
-            completion()
-            return
-        }
-        videoInput?.markAsFinished()
-        audioInput?.markAsFinished()
-        assetWriter.finishWriting {
-            completion()
-        }
+    // MARK: - Utilities
+
+    private func copySampleBuffer(_ sampleBuffer: CMSampleBuffer) -> CMSampleBuffer? {
+        var copy: CMSampleBuffer?
+        let status = CMSampleBufferCreateCopy(
+            allocator: kCFAllocatorDefault,
+            sampleBuffer: sampleBuffer,
+            sampleBufferOut: &copy
+        )
+        guard status == noErr else { return nil }
+        return copy
     }
 
-    private func resetWriterState() {
-        assetWriter = nil
-        videoInput = nil
-        audioInput = nil
-        outputURL = nil
-        sessionStarted = false
+    private func setSaveInProgress(_ inProgress: Bool) {
+        saveStateLock.lock()
+        isSavingClip = inProgress
+        saveStateLock.unlock()
+    }
+
+    private func currentSaveInProgress() -> Bool {
+        saveStateLock.lock()
+        let value = isSavingClip
+        saveStateLock.unlock()
+        return value
     }
 }
