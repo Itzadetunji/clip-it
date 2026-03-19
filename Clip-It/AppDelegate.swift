@@ -16,4 +16,14 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
   ) -> UIInterfaceOrientationMask {
     Self.orientationLock
   }
+
+  /// Applies portrait orientation lock. Use instead of deprecated attemptRotationToDeviceOrientation.
+  static func applyPortraitOrientation() {
+    orientationLock = .portrait
+    guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+          let window = windowScene.windows.first(where: { $0.isKeyWindow }),
+          let rootViewController = window.rootViewController else { return }
+    rootViewController.setNeedsUpdateOfSupportedInterfaceOrientations()
+    windowScene.requestGeometryUpdate(.iOS(interfaceOrientations: .portrait))
+  }
 }
