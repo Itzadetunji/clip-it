@@ -8,6 +8,7 @@
 import Photos
 import ReplayKit
 import SwiftUI
+import UIKit
 import UserNotifications
 
 private let primaryColor = Color("PrimaryColor")
@@ -60,6 +61,9 @@ struct ContentView: View {
       .frame(maxWidth: .infinity, maxHeight: .infinity)
       .background(Color(.systemBackground))
       .onAppear {
+        AppDelegate.orientationLock = .portrait
+        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+        UIViewController.attemptRotationToDeviceOrientation()
         let stored = stateService.getSaveDurationSeconds()
         selectedDuration = stored
         stateService.setSaveDurationSeconds(stored)  // Persist so Broadcast/Control Center use it

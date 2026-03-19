@@ -10,6 +10,7 @@ import SwiftUI
 
 @main
 struct ClipItApp: App {
+  @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   private let broadcastStateService = BroadcastStateService()
 
   var sharedModelContainer: ModelContainer = {
