@@ -25,6 +25,6 @@ struct LocalNotificationHelper {
             content: content,
             trigger: UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
         )
-        UNUserNotificationCenter.current().add(request)
+        UNUserNotificationCenter.current().add(request) { _ in }
     }
 }

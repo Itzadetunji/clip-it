@@ -6,6 +6,7 @@
 //
 
 import AVFoundation
+import ImageIO
 import Photos
 import ReplayKit
 
@@ -214,16 +215,23 @@ final class SampleHandler: RPBroadcastSampleHandler {
                     )
                 else { return }
                 let dimensions = CMVideoFormatDescriptionGetDimensions(format)
+                let width = Int32(dimensions.width)
+                let height = Int32(dimensions.height)
                 let settings: [String: Any] = [
                     AVVideoCodecKey: AVVideoCodecType.h264,
-                    AVVideoWidthKey: dimensions.width,
-                    AVVideoHeightKey: dimensions.height,
+                    AVVideoWidthKey: width,
+                    AVVideoHeightKey: height,
                 ]
                 let input = AVAssetWriterInput(
                     mediaType: .video,
                     outputSettings: settings
                 )
                 input.expectsMediaDataInRealTime = true
+                input.transform = videoTransform(
+                    for: sampleBuffer,
+                    width: width,
+                    height: height
+                )
                 guard writer.canAdd(input) else { return }
                 writer.add(input)
                 currentVideoInput = input
@@ -598,6 +606,45 @@ final class SampleHandler: RPBroadcastSampleHandler {
             for file in files {
                 try? FileManager.default.removeItem(at: file)
             }
+        }
+    }
+
+    // MARK: - Video Orientation (iPad)
+
+    /// Returns the transform for correct playback orientation on iPad.
+    /// ReplayKit sends frames in device natural orientation; RPVideoSampleOrientationKey
+    /// describes how to rotate for intended display.
+    private func videoTransform(
+        for sampleBuffer: CMSampleBuffer,
+        width: Int32,
+        height: Int32
+    ) -> CGAffineTransform {
+        guard
+            let orientationAttachment = CMGetAttachment(
+                sampleBuffer,
+                key: RPVideoSampleOrientationKey as CFString,
+                attachmentModeOut: nil
+            ) as? NSNumber,
+            let orientation = CGImagePropertyOrientation(rawValue: orientationAttachment.uint32Value)
+        else {
+            return .identity
+        }
+        let w = CGFloat(width)
+        let h = CGFloat(height)
+        switch orientation {
+        case .right:
+            return CGAffineTransform(rotationAngle: .pi / 2)
+                .translatedBy(x: 0, y: -h)
+        case .left:
+            return CGAffineTransform(rotationAngle: -.pi / 2)
+                .translatedBy(x: -w, y: 0)
+        case .down:
+            return CGAffineTransform(rotationAngle: .pi)
+                .translatedBy(x: -w, y: -h)
+        case .up, .upMirrored, .downMirrored, .leftMirrored, .rightMirrored:
+            return .identity
+        @unknown default:
+            return .identity
         }
     }
 
