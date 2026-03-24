@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C4B564D32F7284B800DCC5D7 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = C4B564D22F7284B800DCC5D7 /* RevenueCat */; };
+		C4B564D52F7284B800DCC5D7 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = C4B564D42F7284B800DCC5D7 /* RevenueCatUI */; };
 		C4FA262F2F69956100717246 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA262E2F69956100717246 /* ReplayKit.framework */; };
 		C4FA26392F69956100717246 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA262E2F69956100717246 /* ReplayKit.framework */; };
 		C4FA263B2F69956100717246 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA263A2F69956100717246 /* UIKit.framework */; };
@@ -193,6 +195,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4B564D52F7284B800DCC5D7 /* RevenueCatUI in Frameworks */,
+				C4B564D32F7284B800DCC5D7 /* RevenueCat in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,6 +308,8 @@
 			);
 			name = "Clip-It";
 			packageProductDependencies = (
+				C4B564D22F7284B800DCC5D7 /* RevenueCat */,
+				C4B564D42F7284B800DCC5D7 /* RevenueCatUI */,
 			);
 			productName = "Clip-It";
 			productReference = C4FA26062F69715600717246 /* Clip-It.app */;
@@ -405,6 +411,9 @@
 			);
 			mainGroup = C4FA25FD2F69715600717246;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C4FA26072F69715600717246 /* Products */;
 			projectDirPath = "";
@@ -949,6 +958,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.66.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C4B564D22F7284B800DCC5D7 /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCat;
+		};
+		C4B564D42F7284B800DCC5D7 /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCatUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C4FA25FE2F69715600717246 /* Project object */;
 }

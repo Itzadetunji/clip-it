@@ -7,9 +7,15 @@
 
 import SwiftUI
 import UIKit
+import RevenueCat
 
 struct ContentView: View {
     @AppStorage("hasCompletedWelcome") private var hasCompletedWelcome = false
+
+
+    init (){
+        Purchases.configure(withAPIKey: "test_yRqREihRCwAvLeRVfCqsJzeHJaJ")
+    }
 
     var body: some View {
         Group {
