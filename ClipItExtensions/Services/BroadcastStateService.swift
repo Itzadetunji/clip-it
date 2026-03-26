@@ -2,7 +2,7 @@
 //  BroadcastStateService.swift
 //  Broadcast
 //
-//  Created by Cursor on 17/03/2026.
+//  Created by Adetunji Adeyinka on 17/03/2026.
 //
 
 import Foundation
@@ -16,6 +16,9 @@ struct BroadcastStateService {
   private static let saveDurationSecondsKey = "broadcast.saveDurationSeconds"
   private static let lastSaveErrorKey = "broadcast.lastSaveError"
   private static let lastSaveSucceededKey = "broadcast.lastSaveSucceeded"
+  private static let minSaveDurationSeconds = 10
+  private static let maxSaveDurationSeconds = 120
+  private static let defaultSaveDurationSeconds = 15
 
   private let sharedDefaults: UserDefaults?
 
@@ -45,14 +48,17 @@ struct BroadcastStateService {
     sharedDefaults?.set(false, forKey: Self.saveLast10SecondsKey)
   }
 
-  /// User-selected clip duration in seconds (15, 30, or 60). Default 15.
+  /// User-selected clip duration in seconds. Supports free/pro durations up to 120 seconds.
   func getSaveDurationSeconds() -> Int {
     let value = sharedDefaults?.integer(forKey: Self.saveDurationSecondsKey) ?? 0
-    return [15, 30, 60].contains(value) ? value : 15
+    return sanitizedDuration(from: value)
   }
 
   func setSaveDurationSeconds(_ seconds: Int) {
-    sharedDefaults?.set(seconds, forKey: Self.saveDurationSecondsKey)
+    sharedDefaults?.set(
+      sanitizedDuration(from: seconds),
+      forKey: Self.saveDurationSecondsKey
+    )
   }
 
   func setLastSaveError(_ message: String?) {
@@ -96,5 +102,10 @@ struct BroadcastStateService {
   func removeSavedClipsIfNotRecording() {
     guard !isRecordingActive() else { return }
     removeAllSavedClips()
+  }
+
+  private func sanitizedDuration(from seconds: Int) -> Int {
+    guard seconds > 0 else { return Self.defaultSaveDurationSeconds }
+    return max(Self.minSaveDurationSeconds, min(seconds, Self.maxSaveDurationSeconds))
   }
 }

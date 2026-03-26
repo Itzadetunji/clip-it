@@ -7,38 +7,36 @@
 
 import SwiftUI
 import UIKit
-import RevenueCat
 
 struct ContentView: View {
-    @AppStorage("hasCompletedWelcome") private var hasCompletedWelcome = false
+  @AppStorage("hasCompletedWelcome") private var hasCompletedWelcome = false
+  @EnvironmentObject private var subscriptionViewModel: SubscriptionViewModel
 
-
-    init (){
-        Purchases.configure(withAPIKey: "test_yRqREihRCwAvLeRVfCqsJzeHJaJ")
-    }
-
-    var body: some View {
-        Group {
-            if hasCompletedWelcome {
-                MainContentView()
-                    .transition(.opacity)
-            } else {
-                FirstWelcomeView(
-                    isPresented: Binding(
-                        get: { !hasCompletedWelcome },
-                        set: { if !$0 { hasCompletedWelcome = true } }
-                    )
-                )
-                .transition(.opacity)
-                .onAppear {
-                    AppDelegate.applyPortraitOrientation()
-                }
-            }
+  var body: some View {
+    Group {
+      if hasCompletedWelcome {
+        MainContentView()
+          .transition(.opacity)
+      } else {
+        FirstWelcomeView(
+          isPresented: Binding(
+            get: { !hasCompletedWelcome },
+            set: { if !$0 { hasCompletedWelcome = true } }
+          )
+        )
+        .transition(.opacity)
+        .onAppear {
+          AppDelegate.applyPortraitOrientation()
         }
-        .animation(.easeInOut(duration: 0.35), value: hasCompletedWelcome)
+      }
     }
+    .animation(.easeInOut(duration: 0.35), value: hasCompletedWelcome)
+    .task {
+      await subscriptionViewModel.refreshStatus()
+    }
+  }
 }
 
 #Preview {
-    ContentView()
+  ContentView()
 }

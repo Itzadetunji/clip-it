@@ -45,7 +45,7 @@ final class RecordingViewModel {
     stateService.requestSaveLast10Seconds()
     isSaveRequestPending = true
     saveStatusIsError = false
-    saveStatusMessage = "Saving last 10 seconds..."
+    saveStatusMessage = "Saving clip..."
   }
 
   private func refreshState() {
@@ -61,7 +61,7 @@ final class RecordingViewModel {
     // Only show success when extension explicitly signals it finished successfully.
     if stateService.getAndClearLastSaveSucceeded() {
       saveStatusIsError = false
-      saveStatusMessage = "Saved last 10 seconds to Photos."
+      saveStatusMessage = "Clip saved to Photos."
       isSaveRequestPending = false
     }
   }

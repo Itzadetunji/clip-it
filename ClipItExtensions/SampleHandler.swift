@@ -12,7 +12,7 @@ import ReplayKit
 
 /// Broadcast extension entry point.
 /// Implements a PS4-style rolling buffer with 1-second segments.
-/// Recording stays continuous; Save exports the most recent 10 seconds.
+/// Recording stays continuous; Save exports the most recent selected duration.
 final class SampleHandler: RPBroadcastSampleHandler {
     private let stateService = BroadcastStateService()
     private let segmentQueue = DispatchQueue(
@@ -42,7 +42,7 @@ final class SampleHandler: RPBroadcastSampleHandler {
 
     private let appGroupID = "group.com.adetunji.ClipIt"
     private let segmentDurationSeconds: Double = 1.0
-    private let rollingWindowSeconds: Double = 60.0
+    private let rollingWindowSeconds: Double = 120.0
 
     override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?)
     {

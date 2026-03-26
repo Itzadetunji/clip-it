@@ -59,7 +59,35 @@
           ],
           "productID" : "pro_monthly.clipit.adetunji",
           "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "pro_monthly",
+          "referenceName" : "Monthly Pro",
+          "subscriptionGroupID" : "224803D6",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "19.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "694551F4",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "pro_yearly.clipit.adetunji",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Yearly Pro",
           "subscriptionGroupID" : "224803D6",
           "type" : "RecurringSubscription",
           "winbackOffers" : [

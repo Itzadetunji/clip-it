@@ -12,9 +12,11 @@ import UIKit
 import UserNotifications
 
 struct MainContentView: View {
+  @EnvironmentObject private var subscriptionViewModel: SubscriptionViewModel
   @State private var recordingViewModel = RecordingViewModel()
   @State private var selectedDuration: Int = 15
   @State private var triggerRecordPicker = false
+  @State private var showSettings = false
   private let stateService = BroadcastStateService()
 
   var body: some View {
@@ -25,6 +27,15 @@ struct MainContentView: View {
             .font(SofiaFont.bold(size: 28))
 
           Spacer()
+
+          Button {
+            showSettings = true
+          } label: {
+            Image(systemName: "gearshape.fill")
+              .font(.system(size: 22))
+              .foregroundStyle(Color("PrimaryColor"))
+          }
+          .buttonStyle(.plain)
         }
         .padding(.horizontal, 24)
         .padding(.top, 24)
@@ -33,7 +44,9 @@ struct MainContentView: View {
           recordingViewModel: recordingViewModel,
           selectedDuration: $selectedDuration,
           triggerRecordPicker: $triggerRecordPicker,
-          stateService: stateService
+          stateService: stateService,
+          isPro: subscriptionViewModel.isPro,
+          onUpgradeRequested: { showSettings = true }
         )
 
         Spacer()
@@ -43,9 +56,13 @@ struct MainContentView: View {
       .background(Color(.systemBackground))
       .onAppear {
         AppDelegate.applyPortraitOrientation()
-        let stored = stateService.getSaveDurationSeconds()
-        selectedDuration = stored
-        stateService.setSaveDurationSeconds(stored)
+        Task {
+          await subscriptionViewModel.refreshStatus()
+          let stored = stateService.getSaveDurationSeconds()
+          let initialDuration = subscriptionViewModel.isPro ? stored : 10
+          selectedDuration = initialDuration
+          stateService.setSaveDurationSeconds(initialDuration)
+        }
         PHPhotoLibrary.requestAuthorization(for: .addOnly) { _ in }
         recordingViewModel.startMonitoring()
       }
@@ -56,6 +73,9 @@ struct MainContentView: View {
         if url.host == "startRecording" {
           triggerRecordPicker = true
         }
+      }
+      .navigationDestination(isPresented: $showSettings) {
+        SettingsView()
       }
     }
   }
