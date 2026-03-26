@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C4A0D0C72F753F330069E47D /* TablerIcons in Frameworks */ = {isa = PBXBuildFile; productRef = C4A0D0C62F753F330069E47D /* TablerIcons */; };
 		C4B564D32F7284B800DCC5D7 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = C4B564D22F7284B800DCC5D7 /* RevenueCat */; };
 		C4B564D52F7284B800DCC5D7 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = C4B564D42F7284B800DCC5D7 /* RevenueCatUI */; };
 		C4FA262F2F69956100717246 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA262E2F69956100717246 /* ReplayKit.framework */; };
@@ -196,6 +197,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4A0D0C72F753F330069E47D /* TablerIcons in Frameworks */,
 				C4B564D52F7284B800DCC5D7 /* RevenueCatUI in Frameworks */,
 				C4B564D32F7284B800DCC5D7 /* RevenueCat in Frameworks */,
 			);
@@ -320,6 +322,7 @@
 			packageProductDependencies = (
 				C4B564D22F7284B800DCC5D7 /* RevenueCat */,
 				C4B564D42F7284B800DCC5D7 /* RevenueCatUI */,
+				C4A0D0C62F753F330069E47D /* TablerIcons */,
 			);
 			productName = "Clip-It";
 			productReference = C4FA26062F69715600717246 /* Clip-It.app */;
@@ -423,6 +426,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+				C4A0D0C52F753F330069E47D /* XCRemoteSwiftPackageReference "tabler-icons-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C4FA26072F69715600717246 /* Products */;
@@ -972,6 +976,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		C4A0D0C52F753F330069E47D /* XCRemoteSwiftPackageReference "tabler-icons-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/YazeedAlKhalaf/tabler-icons-swift.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm";
@@ -983,6 +995,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C4A0D0C62F753F330069E47D /* TablerIcons */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C4A0D0C52F753F330069E47D /* XCRemoteSwiftPackageReference "tabler-icons-swift" */;
+			productName = TablerIcons;
+		};
 		C4B564D22F7284B800DCC5D7 /* RevenueCat */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;

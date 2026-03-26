@@ -1,13 +1,22 @@
 {
-  "originHash" : "a3bcaa15a454fa7370ad47de0b4a365f92876b40d5fa0a3e490eb29c4688cd7b",
+  "originHash" : "782de363c77fbafc8f8ce1614a92b4301ed8068ef079236c08fc3e0a5692dda4",
   "pins" : [
     {
       "identity" : "purchases-ios-spm",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/RevenueCat/purchases-ios-spm",
       "state" : {
-        "revision" : "abb0d68c3e7ba97b16ab51c38fcaca16b0e358c8",
-        "version" : "5.66.0"
+        "revision" : "a1bf83fc76099c3d801aa7fc2543c3b9e488cd00",
+        "version" : "5.67.0"
+      }
+    },
+    {
+      "identity" : "tabler-icons-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/YazeedAlKhalaf/tabler-icons-swift.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "41cfb5218c63420fea0d729a843b1dadd404ae63"
       }
     }
   ],
