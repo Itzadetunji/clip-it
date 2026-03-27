@@ -7,6 +7,7 @@
 
 import Photos
 import SwiftUI
+import UIKit
 
 private let primaryColor = Color("PrimaryColor")
 private let recordingColor = Color(red: 0.95, green: 0.35, blue: 0.28)
@@ -24,10 +25,11 @@ struct ClipView: View {
     @State private var photosAccessDenied: Bool = false
     @State private var useCustomDuration = false
     @State private var customDurationText = "60"
+    @FocusState private var isCustomDurationFieldFocused: Bool
 
     var body: some View {
         VStack(spacing: 24) {
-            Spacer()
+            keyboardDismissibleSpacer
             Button {
                 checkPhotoAccess {
                     triggerRecordPicker = true
@@ -84,7 +86,16 @@ struct ClipView: View {
             .padding(.horizontal, 32)
             .padding(.bottom, 48)
 
-            Spacer()
+            keyboardDismissibleSpacer
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") {
+                    dismissCustomDurationKeyboard()
+                }
+                .font(SofiaFont.semiBold(size: 16))
+            }
         }
         .onAppear {
             if isPro {
@@ -110,12 +121,35 @@ struct ClipView: View {
         .onChange(of: useCustomDuration) { _, newValue in
             if newValue {
                 customDurationText = "\(selectedDuration)"
-            } else if ![15, 30, 60].contains(selectedDuration) {
-                selectedDuration = 15
-                stateService.setSaveDurationSeconds(15)
+            } else {
+                dismissCustomDurationKeyboard()
+                if ![15, 30, 60].contains(selectedDuration) {
+                    selectedDuration = 15
+                    stateService.setSaveDurationSeconds(15)
+                }
             }
         }
         .alert(isPresented: $photosAccessDenied, content: getAlert)
+    }
+
+    /// Tappable spacer so tapping empty areas dismisses the number pad when custom duration is active.
+    private var keyboardDismissibleSpacer: some View {
+        Spacer()
+            .contentShape(Rectangle())
+            .onTapGesture {
+                guard isPro, useCustomDuration else { return }
+                dismissCustomDurationKeyboard()
+            }
+    }
+
+    private func dismissCustomDurationKeyboard() {
+        isCustomDurationFieldFocused = false
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil,
+            from: nil,
+            for: nil
+        )
     }
 
     private var freeDurationControls: some View {
@@ -161,6 +195,7 @@ struct ClipView: View {
                 HStack(spacing: 8) {
                     TextField("10-120", text: $customDurationText)
                         .keyboardType(.numberPad)
+                        .focused($isCustomDurationFieldFocused)
                         .textFieldStyle(.plain)
                         .font(SofiaFont.regular(size: 14))
                         .padding(.horizontal, 10)

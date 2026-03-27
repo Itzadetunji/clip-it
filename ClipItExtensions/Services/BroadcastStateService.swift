@@ -10,15 +10,27 @@ import Foundation
 /// Shared state between the app process and the broadcast extension process.
 /// We store lightweight flags in App Group UserDefaults.
 struct BroadcastStateService {
+  enum WatermarkPosition: String, CaseIterable {
+    case topLeft = "top-left"
+    case topRight = "top-right"
+    case bottomLeft = "bottom-left"
+    case bottomRight = "bottom-right"
+  }
+
   private static let appGroupID = "group.com.adetunji.ClipIt"
   private static let isRecordingKey = "broadcast.isRecording"
   private static let saveLast10SecondsKey = "broadcast.saveLast10Seconds"
   private static let saveDurationSecondsKey = "broadcast.saveDurationSeconds"
   private static let lastSaveErrorKey = "broadcast.lastSaveError"
   private static let lastSaveSucceededKey = "broadcast.lastSaveSucceeded"
+  private static let isProUserKey = "broadcast.isProUser"
+  private static let watermarkPositionKey = "broadcast.watermarkPosition"
+  private static let watermarkOpacityKey = "broadcast.watermarkOpacity"
+  private static let proWatermarkEnabledKey = "broadcast.proWatermarkEnabled"
   private static let minSaveDurationSeconds = 10
   private static let maxSaveDurationSeconds = 120
   private static let defaultSaveDurationSeconds = 15
+  private static let defaultWatermarkOpacity = 0.5
 
   private let sharedDefaults: UserDefaults?
 
@@ -32,6 +44,11 @@ struct BroadcastStateService {
 
   func isRecordingActive() -> Bool {
     sharedDefaults?.bool(forKey: Self.isRecordingKey) ?? false
+  }
+
+  /// Reads Pro status synced by the app so extension can enforce free/pro behavior.
+  func isProUser() -> Bool {
+    sharedDefaults?.bool(forKey: Self.isProUserKey) ?? false
   }
 
   /// Called by the app when the user taps Save.
@@ -59,6 +76,25 @@ struct BroadcastStateService {
       sanitizedDuration(from: seconds),
       forKey: Self.saveDurationSecondsKey
     )
+  }
+
+  /// Reads user-selected watermark placement. Falls back to top-right if missing.
+  func getWatermarkPosition() -> WatermarkPosition {
+    guard
+      let rawValue = sharedDefaults?.string(forKey: Self.watermarkPositionKey),
+      let position = WatermarkPosition(rawValue: rawValue)
+    else { return .topRight }
+    return position
+  }
+
+  /// Reads persisted watermark opacity in 0...1 range.
+  func getWatermarkOpacity() -> Double {
+    let rawOpacity = sharedDefaults?.double(forKey: Self.watermarkOpacityKey) ?? Self.defaultWatermarkOpacity
+    return sanitizedOpacity(from: rawOpacity)
+  }
+
+  func isProWatermarkEnabled() -> Bool {
+    sharedDefaults?.bool(forKey: Self.proWatermarkEnabledKey) ?? false
   }
 
   func setLastSaveError(_ message: String?) {
@@ -107,5 +143,9 @@ struct BroadcastStateService {
   private func sanitizedDuration(from seconds: Int) -> Int {
     guard seconds > 0 else { return Self.defaultSaveDurationSeconds }
     return max(Self.minSaveDurationSeconds, min(seconds, Self.maxSaveDurationSeconds))
+  }
+
+  private func sanitizedOpacity(from opacity: Double) -> Double {
+    max(0.0, min(opacity, 1.0))
   }
 }

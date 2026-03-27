@@ -9,6 +9,7 @@ import AVFoundation
 import ImageIO
 import Photos
 import ReplayKit
+import UIKit
 
 /// Broadcast extension entry point.
 /// Implements a PS4-style rolling buffer with 1-second segments.
@@ -43,6 +44,8 @@ final class SampleHandler: RPBroadcastSampleHandler {
     private let appGroupID = "group.com.adetunji.ClipIt"
     private let segmentDurationSeconds: Double = 1.0
     private let rollingWindowSeconds: Double = 120.0
+    private let watermarkSize: CGFloat = 64
+    private let watermarkPadding: CGFloat = 64
 
     override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?)
     {
@@ -432,7 +435,7 @@ final class SampleHandler: RPBroadcastSampleHandler {
             guard
                 let exportSession = AVAssetExportSession(
                     asset: composition,
-                    presetName: AVAssetExportPresetPassthrough
+                    presetName: AVAssetExportPresetHighestQuality
                 )
             else {
                 throw NSError(
@@ -443,6 +446,14 @@ final class SampleHandler: RPBroadcastSampleHandler {
                             "Unable to create export session."
                     ]
                 )
+            }
+
+            // Build overlay composition so we can render watermark during export.
+            if let watermarkComposition = makeWatermarkVideoComposition(
+                for: composition,
+                videoTrack: videoTrack
+            ) {
+                exportSession.videoComposition = watermarkComposition
             }
 
             try await exportSession.export(to: exportURL, as: .mp4)
@@ -548,6 +559,147 @@ final class SampleHandler: RPBroadcastSampleHandler {
         }
 
         return result
+    }
+
+    /// Creates a video composition with watermark layer based on free/pro state and saved settings.
+    private func makeWatermarkVideoComposition(
+        for composition: AVMutableComposition,
+        videoTrack: AVMutableCompositionTrack
+    ) -> AVMutableVideoComposition? {
+        // Decide which watermark to apply: free always gets Clip-It logo; Pro uses user logo only when enabled.
+        let isProUser = stateService.isProUser()
+        let position: BroadcastStateService.WatermarkPosition
+        let opacity: CGFloat
+        let watermarkImage: UIImage
+
+        if isProUser {
+            guard stateService.isProWatermarkEnabled() else { return nil }
+            guard let userLogoImage = loadUserLogoImage() else { return nil }
+            watermarkImage = userLogoImage
+            position = stateService.getWatermarkPosition()
+            opacity = CGFloat(stateService.getWatermarkOpacity())
+        } else {
+            guard let clipItLogoImage = loadClipItLogoImage() else { return nil }
+            watermarkImage = clipItLogoImage
+            position = .bottomRight
+            opacity = 1
+        }
+
+        let renderSize = resolvedRenderSize(for: videoTrack)
+        guard renderSize.width > 0, renderSize.height > 0 else { return nil }
+
+        let videoComposition = AVMutableVideoComposition()
+        videoComposition.frameDuration = CMTime(value: 1, timescale: 30)
+        videoComposition.renderSize = renderSize
+
+        let instruction = AVMutableVideoCompositionInstruction()
+        instruction.timeRange = CMTimeRange(start: .zero, duration: composition.duration)
+
+        let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: videoTrack)
+        layerInstruction.setTransform(videoTrack.preferredTransform, at: .zero)
+        instruction.layerInstructions = [layerInstruction]
+        videoComposition.instructions = [instruction]
+
+        // Build CALayer tree with a fixed 64x64 watermark anchored to the selected corner.
+        let videoLayer = CALayer()
+        videoLayer.frame = CGRect(origin: .zero, size: renderSize)
+
+        let parentLayer = CALayer()
+        parentLayer.frame = CGRect(origin: .zero, size: renderSize)
+        parentLayer.addSublayer(videoLayer)
+
+        let watermarkLayer = CALayer()
+        watermarkLayer.contents = watermarkImage.cgImage
+        watermarkLayer.contentsGravity = .resizeAspectFill
+        watermarkLayer.masksToBounds = true
+        watermarkLayer.cornerRadius = 8
+        watermarkLayer.opacity = Float(opacity)
+        watermarkLayer.frame = watermarkFrame(
+            for: position,
+            renderSize: renderSize
+        )
+        parentLayer.addSublayer(watermarkLayer)
+
+        videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(
+            postProcessingAsVideoLayer: videoLayer,
+            in: parentLayer
+        )
+
+        return videoComposition
+    }
+
+    private func watermarkFrame(
+        for position: BroadcastStateService.WatermarkPosition,
+        renderSize: CGSize
+    ) -> CGRect {
+        switch position {
+        case .topLeft:
+            return CGRect(x: watermarkPadding, y: watermarkPadding, width: watermarkSize, height: watermarkSize)
+        case .topRight:
+            return CGRect(
+                x: renderSize.width - watermarkSize - watermarkPadding,
+                y: watermarkPadding,
+                width: watermarkSize,
+                height: watermarkSize
+            )
+        case .bottomLeft:
+            return CGRect(
+                x: watermarkPadding,
+                y: renderSize.height - watermarkSize - watermarkPadding,
+                width: watermarkSize,
+                height: watermarkSize
+            )
+        case .bottomRight:
+            return CGRect(
+                x: renderSize.width - watermarkSize - watermarkPadding,
+                y: renderSize.height - watermarkSize - watermarkPadding,
+                width: watermarkSize,
+                height: watermarkSize
+            )
+        }
+    }
+
+    private func resolvedRenderSize(for videoTrack: AVAssetTrack) -> CGSize {
+        let transformedSize = videoTrack.naturalSize.applying(videoTrack.preferredTransform)
+        return CGSize(width: abs(transformedSize.width), height: abs(transformedSize.height))
+    }
+
+    private func loadUserLogoImage() -> UIImage? {
+        guard let containerURL = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: appGroupID
+        ) else { return nil }
+
+        let logoURL = containerURL
+            .appendingPathComponent("Watermark", isDirectory: true)
+            .appendingPathComponent("user-logo.jpg", isDirectory: false)
+
+        guard
+            FileManager.default.fileExists(atPath: logoURL.path),
+            let data = try? Data(contentsOf: logoURL),
+            let image = UIImage(data: data)
+        else { return nil }
+        return image
+    }
+
+    /// Free-tier watermark: app logo copied into App Group by the main app at launch (`free-watermark.png`).
+    private func loadClipItLogoImage() -> UIImage? {
+        if let containerURL = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: appGroupID
+        ) {
+            let appGroupWatermarkURL = containerURL
+                .appendingPathComponent("Watermark", isDirectory: true)
+                .appendingPathComponent("free-watermark.png", isDirectory: false)
+            if let data = try? Data(contentsOf: appGroupWatermarkURL),
+               let appGroupImage = UIImage(data: data) {
+                return appGroupImage
+            }
+        }
+
+        // Extension bundle usually does not include app assets; avoid text placeholder—return nil if unset.
+        if let bundled = UIImage(named: "FreeWatermark") {
+            return bundled
+        }
+        return nil
     }
 
     // MARK: - Path Helpers

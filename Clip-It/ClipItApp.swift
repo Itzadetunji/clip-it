@@ -9,6 +9,9 @@ import Combine
 import RevenueCat
 import SwiftData
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 @main
 struct ClipItApp: App {
@@ -42,6 +45,7 @@ struct ClipItApp: App {
     // First app load cleanup:
     // if recording is currently inactive, clear old temporary clip files.
     broadcastStateService.removeSavedClipsIfNotRecording()
+    seedFreeWatermarkImageForExtension()
     NotificationService.requestAuthorization()
   }
 
@@ -54,5 +58,31 @@ struct ClipItApp: App {
       .environmentObject(subscriptionViewModel)
     }
     .modelContainer(sharedModelContainer)
+  }
+
+  /// Copies the bundled free watermark image into App Group storage so the extension can read it.
+  private func seedFreeWatermarkImageForExtension() {
+    #if canImport(UIKit)
+    // Standalone asset so `UIImage(named:)` works reliably (App Icon set images are not always named images).
+    let bundledImage =
+      UIImage(named: "FreeWatermark")
+      ?? ["Apple-1", "Apple"].compactMap { UIImage(named: $0) }.first
+
+    guard
+      let containerURL = FileManager.default.containerURL(
+        forSecurityApplicationGroupIdentifier: "group.com.adetunji.ClipIt"
+      ),
+      let image = bundledImage,
+      let pngData = image.pngData()
+    else { return }
+
+    let watermarkDirectory = containerURL.appendingPathComponent("Watermark", isDirectory: true)
+    if !FileManager.default.fileExists(atPath: watermarkDirectory.path) {
+      try? FileManager.default.createDirectory(at: watermarkDirectory, withIntermediateDirectories: true)
+    }
+
+    let freeWatermarkURL = watermarkDirectory.appendingPathComponent("free-watermark.png", isDirectory: false)
+    try? pngData.write(to: freeWatermarkURL, options: .atomic)
+    #endif
   }
 }

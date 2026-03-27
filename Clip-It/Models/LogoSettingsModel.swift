@@ -13,14 +13,27 @@ import UIKit
 final class LogoSettingsModel: ObservableObject {
   @Published private(set) var logoImage: UIImage?
 
+  private let appGroupID = "group.com.adetunji.ClipIt"
   private let fileName = "user-logo.jpg"
 
   private var logoFileURL: URL {
-    let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-    if !FileManager.default.fileExists(atPath: dir.path) {
-      try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+    guard
+      let containerURL = FileManager.default.containerURL(
+        forSecurityApplicationGroupIdentifier: appGroupID
+      )
+    else {
+      let fallbackDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+      if !FileManager.default.fileExists(atPath: fallbackDirectory.path) {
+        try? FileManager.default.createDirectory(at: fallbackDirectory, withIntermediateDirectories: true)
+      }
+      return fallbackDirectory.appendingPathComponent(fileName, isDirectory: false)
     }
-    return dir.appendingPathComponent(fileName, isDirectory: false)
+
+    let logoDirectory = containerURL.appendingPathComponent("Watermark", isDirectory: true)
+    if !FileManager.default.fileExists(atPath: logoDirectory.path) {
+      try? FileManager.default.createDirectory(at: logoDirectory, withIntermediateDirectories: true)
+    }
+    return logoDirectory.appendingPathComponent(fileName, isDirectory: false)
   }
 
   init() {
