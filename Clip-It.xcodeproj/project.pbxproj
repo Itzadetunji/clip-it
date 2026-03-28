@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C47A65292F77CFB300140858 /* TablerIcons in Frameworks */ = {isa = PBXBuildFile; productRef = C47A65282F77CFB300140858 /* TablerIcons */; };
-		C4B564D32F7284B800DCC5D7 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = C4B564D22F7284B800DCC5D7 /* RevenueCat */; };
-		C4B564D52F7284B800DCC5D7 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = C4B564D42F7284B800DCC5D7 /* RevenueCatUI */; };
+		C47A67012F78776C00140858 /* ReceiptParser in Frameworks */ = {isa = PBXBuildFile; productRef = C47A67002F78776C00140858 /* ReceiptParser */; };
+		C47A67032F78776C00140858 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = C47A67022F78776C00140858 /* RevenueCat */; };
+		C47A67052F78776C00140858 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = C47A67042F78776C00140858 /* RevenueCatUI */; };
+		C47A670A2F78777600140858 /* TablerIcons in Frameworks */ = {isa = PBXBuildFile; productRef = C47A67092F78777600140858 /* TablerIcons */; };
 		C4FA262F2F69956100717246 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA262E2F69956100717246 /* ReplayKit.framework */; };
 		C4FA26392F69956100717246 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA262E2F69956100717246 /* ReplayKit.framework */; };
 		C4FA263B2F69956100717246 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA263A2F69956100717246 /* UIKit.framework */; };
@@ -196,9 +197,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C47A65292F77CFB300140858 /* TablerIcons in Frameworks */,
-				C4B564D52F7284B800DCC5D7 /* RevenueCatUI in Frameworks */,
-				C4B564D32F7284B800DCC5D7 /* RevenueCat in Frameworks */,
+				C47A67032F78776C00140858 /* RevenueCat in Frameworks */,
+				C47A67012F78776C00140858 /* ReceiptParser in Frameworks */,
+				C47A67052F78776C00140858 /* RevenueCatUI in Frameworks */,
+				C47A670A2F78777600140858 /* TablerIcons in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,9 +312,10 @@
 			);
 			name = "Clip-It";
 			packageProductDependencies = (
-				C4B564D22F7284B800DCC5D7 /* RevenueCat */,
-				C4B564D42F7284B800DCC5D7 /* RevenueCatUI */,
-				C47A65282F77CFB300140858 /* TablerIcons */,
+				C47A67002F78776C00140858 /* ReceiptParser */,
+				C47A67022F78776C00140858 /* RevenueCat */,
+				C47A67042F78776C00140858 /* RevenueCatUI */,
+				C47A67092F78777600140858 /* TablerIcons */,
 			);
 			productName = "Clip-It";
 			productReference = C4FA26062F69715600717246 /* Clip-It.app */;
@@ -415,8 +418,8 @@
 			mainGroup = C4FA25FD2F69715600717246;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
-				C47A65272F77CFB300140858 /* XCRemoteSwiftPackageReference "tabler-icons-swift" */,
+				C47A66FF2F78776C00140858 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+				C47A67082F78777600140858 /* XCRemoteSwiftPackageReference "tabler-icons-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C4FA26072F69715600717246 /* Products */;
@@ -964,7 +967,15 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C47A65272F77CFB300140858 /* XCRemoteSwiftPackageReference "tabler-icons-swift" */ = {
+		C47A66FF2F78776C00140858 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.67.0;
+			};
+		};
+		C47A67082F78777600140858 /* XCRemoteSwiftPackageReference "tabler-icons-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/YazeedAlKhalaf/tabler-icons-swift.git";
 			requirement = {
@@ -972,31 +983,28 @@
 				kind = branch;
 			};
 		};
-		C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.66.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C47A65282F77CFB300140858 /* TablerIcons */ = {
+		C47A67002F78776C00140858 /* ReceiptParser */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C47A65272F77CFB300140858 /* XCRemoteSwiftPackageReference "tabler-icons-swift" */;
-			productName = TablerIcons;
+			package = C47A66FF2F78776C00140858 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = ReceiptParser;
 		};
-		C4B564D22F7284B800DCC5D7 /* RevenueCat */ = {
+		C47A67022F78776C00140858 /* RevenueCat */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			package = C47A66FF2F78776C00140858 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
 			productName = RevenueCat;
 		};
-		C4B564D42F7284B800DCC5D7 /* RevenueCatUI */ = {
+		C47A67042F78776C00140858 /* RevenueCatUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			package = C47A66FF2F78776C00140858 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
 			productName = RevenueCatUI;
+		};
+		C47A67092F78777600140858 /* TablerIcons */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C47A67082F78777600140858 /* XCRemoteSwiftPackageReference "tabler-icons-swift" */;
+			productName = TablerIcons;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
