@@ -18,15 +18,22 @@ struct EnableNotificationsView: View {
             .onAppear {
                 checkNotificationAccess()
             }
-            .alert("Notifications Access Required", isPresented: $showAccessDeniedAlert) {
+            .alert(
+                "Notifications Access Required",
+                isPresented: $showAccessDeniedAlert
+            ) {
                 Button("Open Settings") {
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                    if let url = URL(
+                        string: UIApplication.openSettingsURLString
+                    ) {
                         UIApplication.shared.open(url)
                     }
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Clip-It needs notifications to tell you when clips are saved. Please enable them in Settings.")
+                Text(
+                    "Clip-It needs notifications to tell you when clips are saved. Please enable them in Settings."
+                )
             }
     }
 

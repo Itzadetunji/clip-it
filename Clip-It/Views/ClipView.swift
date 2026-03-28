@@ -32,7 +32,8 @@ struct ClipView: View {
             keyboardDismissibleSpacer
             Button {
                 checkPhotoAccess {
-                    stateService.syncBroadcastCaptureOrientationFromCurrentWindowScene()
+                    stateService
+                        .syncBroadcastCaptureOrientationFromCurrentWindowScene()
                     triggerRecordPicker = true
                 }
             } label: {
