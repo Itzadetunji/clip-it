@@ -109,7 +109,8 @@ struct BroadcastStateService {
   }
 
   func getWatermarkOpacity() -> Double {
-    let rawOpacity = sharedDefaults?.double(forKey: Self.watermarkOpacityKey) ?? Self.defaultWatermarkOpacity
+    let rawOpacity =
+      sharedDefaults?.double(forKey: Self.watermarkOpacityKey) ?? Self.defaultWatermarkOpacity
     return sanitizedOpacity(from: rawOpacity)
   }
 

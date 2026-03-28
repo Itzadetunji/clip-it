@@ -588,7 +588,8 @@ final class SampleHandler: RPBroadcastSampleHandler {
   /// extra transform (field‑tested): portrait / portrait‑upside‑down need ±90° to get upright portrait
   /// output; **landscape left** needs 180° (same aspect, not mirrored).
   ///
-  /// **iPhone:** Landscape UI + portrait‑shaped buffer → one 90° CCW (see `broadcastCaptureIsLandscape`).
+  /// **iPhone:** Landscape UI + portrait‑shaped buffer → 90° **CCW** for **landscape right**, **CW** for
+  /// **landscape left** (same CCW for both was upside‑down on landscape left).
   private func exportLayerTransform(
     naturalSize: CGSize,
     preferredTransform: CGAffineTransform,
@@ -627,7 +628,14 @@ final class SampleHandler: RPBroadcastSampleHandler {
     guard needsLandscapeFix else {
       return (baseline, baselineSize, false)
     }
-    return apply(rotate90CCW(naturalSize: naturalSize))
+    switch captureOrientation {
+    case .landscapeLeft:
+      return apply(rotate90CW(naturalSize: naturalSize))
+    case .landscapeRight:
+      return apply(rotate90CCW(naturalSize: naturalSize))
+    default:
+      return apply(rotate90CCW(naturalSize: naturalSize))
+    }
   }
 
   /// Export composition: orientation normalization (ReplayKit buffer shape/orientation differs by device and
