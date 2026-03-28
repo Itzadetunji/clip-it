@@ -13,6 +13,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+    RevenueCatBootstrap.configureIfNeeded()
     UNUserNotificationCenter.current().delegate = self
     return true
   }

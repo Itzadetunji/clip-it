@@ -103,6 +103,7 @@
 
 /* Begin PBXFileReference section */
 		C4FA26062F69715600717246 /* Clip-It.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Clip-It.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4FA26102F69715700717246 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C4FA262C2F69956100717246 /* ClipIt.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClipIt.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4FA262E2F69956100717246 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		C4FA26382F69956100717246 /* ClipItSetupUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClipItSetupUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -234,6 +235,7 @@
 		C4FA25FD2F69715600717246 = {
 			isa = PBXGroup;
 			children = (
+				C4FA26102F69715700717246 /* Config.xcconfig */,
 				C4FA26082F69715600717246 /* Clip-It */,
 				C4FAF0212F69960000717246 /* Clip-It/Font */,
 				C4FA26302F69956100717246 /* ClipItExtensions */,
@@ -633,6 +635,7 @@
 		};
 		C4FA26142F69715700717246 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C4FA26102F69715700717246 /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -649,6 +652,7 @@
 				INFOPLIST_FILE = "Clip-It/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save screen recordings to your Photos library.";
+				INFOPLIST_PREPROCESS = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -683,6 +687,7 @@
 		};
 		C4FA26152F69715700717246 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C4FA26102F69715700717246 /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -699,6 +704,7 @@
 				INFOPLIST_FILE = "Clip-It/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save screen recordings to your Photos library.";
+				INFOPLIST_PREPROCESS = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

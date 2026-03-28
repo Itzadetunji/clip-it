@@ -29,4 +29,14 @@ final class SubscriptionViewModel: ObservableObject {
       // Keep previous state when refresh fails to avoid flipping paid users to free unexpectedly.
     }
   }
+
+  /// Refreshes offerings from RevenueCat / StoreKit before showing the paywall (rate-limited by the SDK).
+  func syncOfferingsIfNeeded() async {
+    guard Purchases.isConfigured else { return }
+    do {
+      _ = try await Purchases.shared.syncAttributesAndOfferingsIfNeeded()
+    } catch {
+      // Paywall will use last cached offerings if sync fails.
+    }
+  }
 }

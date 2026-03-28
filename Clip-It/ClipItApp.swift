@@ -6,7 +6,6 @@
 //
 
 import Combine
-import RevenueCat
 import SwiftData
 import SwiftUI
 #if canImport(UIKit)
@@ -33,14 +32,7 @@ struct ClipItApp: App {
   }()
 
   init() {
-    let apiKey =
-      (Bundle.main.object(forInfoDictionaryKey: "REVENUECAT_API_KEY") as? String)?
-      .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-    if !apiKey.isEmpty {
-      Purchases.configure(withAPIKey: apiKey)
-    } else {
-      NSLog("RevenueCat key missing. Set REVENUECAT_API_KEY in Config.xcconfig.")
-    }
+    // RevenueCat is configured in AppDelegate so the main bundle / Info.plist are fully resolved.
 
     // First app load cleanup:
     // if recording is currently inactive, clear old temporary clip files.

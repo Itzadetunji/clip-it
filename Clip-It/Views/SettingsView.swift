@@ -5,6 +5,7 @@
 //  Created by Adetunji Adeyinka on 24/03/2026.
 //
 
+import RevenueCat
 import RevenueCatUI
 import SwiftUI
 import TablerIcons
@@ -52,7 +53,11 @@ struct SettingsView: View {
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showPaywall, onDismiss: refreshSubscriptionState) {
-            PaywallView(displayCloseButton: true)
+            if Purchases.isConfigured {
+                PaywallView(displayCloseButton: true)
+            } else {
+                paywallUnavailableView
+            }
         }
         .task {
             await subscriptionViewModel.refreshStatus()
@@ -118,7 +123,10 @@ struct SettingsView: View {
                     }
 
                     Button {
-                        showPaywall = true
+                        Task {
+                            await subscriptionViewModel.syncOfferingsIfNeeded()
+                            showPaywall = true
+                        }
                     } label: {
                         Text("Go Pro")
                             .font(SofiaFont.semiBold(size: 16))
@@ -216,6 +224,29 @@ struct SettingsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var paywallUnavailableView: some View {
+        NavigationStack {
+            VStack(spacing: 16) {
+                Text("Purchases aren’t set up yet")
+                    .font(SofiaFont.semiBold(size: 18))
+                Text(
+                    "Add your RevenueCat public API key to Config.xcconfig as REVENUECAT_API_KEY, then clean the build folder (Shift+⌘+K) and build again. SwiftUI previews don’t run app launch, so use the full app scheme."
+                )
+                .font(SofiaFont.regular(size: 15))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            }
+            .padding(24)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(.systemBackground))
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") { showPaywall = false }
+                }
+            }
+        }
     }
 
     private var legalSection: some View {
