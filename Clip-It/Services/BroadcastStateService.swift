@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 /// Shared state between the app process and the broadcast extension process.
 /// We store lightweight flags in App Group UserDefaults.
@@ -27,6 +28,9 @@ struct BroadcastStateService {
   private static let watermarkPositionKey = "broadcast.watermarkPosition"
   private static let watermarkOpacityKey = "broadcast.watermarkOpacity"
   private static let proWatermarkEnabledKey = "broadcast.proWatermarkEnabled"
+  private static let broadcastCaptureIsLandscapeKey = "broadcast.captureIsLandscape"
+  private static let broadcastCaptureInterfaceOrientationRawKey =
+    "broadcast.captureInterfaceOrientationRaw"
   private static let minSaveDurationSeconds = 10
   private static let maxSaveDurationSeconds = 120
   private static let defaultSaveDurationSeconds = 15
@@ -111,6 +115,43 @@ struct BroadcastStateService {
 
   func setProWatermarkEnabled(_ isEnabled: Bool) {
     sharedDefaults?.set(isEnabled, forKey: Self.proWatermarkEnabledKey)
+  }
+
+  /// Set when the user starts a broadcast (main app). Extension reads at `broadcastStarted`.
+  func setBroadcastCaptureIsLandscape(_ isLandscape: Bool) {
+    sharedDefaults?.set(isLandscape, forKey: Self.broadcastCaptureIsLandscapeKey)
+  }
+
+  func isBroadcastCaptureLandscape() -> Bool {
+    sharedDefaults?.bool(forKey: Self.broadcastCaptureIsLandscapeKey) ?? false
+  }
+
+  /// `UIInterfaceOrientation.rawValue` at broadcast start; extension uses this to pick landscape rotation direction.
+  func setBroadcastCaptureInterfaceOrientationRaw(_ rawValue: Int) {
+    sharedDefaults?.set(rawValue, forKey: Self.broadcastCaptureInterfaceOrientationRawKey)
+  }
+
+  func getBroadcastCaptureInterfaceOrientationRaw() -> Int {
+    sharedDefaults?.integer(forKey: Self.broadcastCaptureInterfaceOrientationRawKey) ?? 0
+  }
+
+  /// Call from the main app whenever the user initiates recording (picker button or deep link).
+  func syncBroadcastCaptureOrientationFromCurrentWindowScene() {
+    guard
+      let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+    else {
+      setBroadcastCaptureIsLandscape(false)
+      setBroadcastCaptureInterfaceOrientationRaw(0)
+      return
+    }
+    let orientation = scene.interfaceOrientation
+    setBroadcastCaptureInterfaceOrientationRaw(orientation.rawValue)
+    switch orientation {
+    case .landscapeLeft, .landscapeRight:
+      setBroadcastCaptureIsLandscape(true)
+    default:
+      setBroadcastCaptureIsLandscape(false)
+    }
   }
 
   func isProWatermarkEnabled() -> Bool {

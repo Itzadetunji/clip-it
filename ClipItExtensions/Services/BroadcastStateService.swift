@@ -27,6 +27,9 @@ struct BroadcastStateService {
   private static let watermarkPositionKey = "broadcast.watermarkPosition"
   private static let watermarkOpacityKey = "broadcast.watermarkOpacity"
   private static let proWatermarkEnabledKey = "broadcast.proWatermarkEnabled"
+  private static let broadcastCaptureIsLandscapeKey = "broadcast.captureIsLandscape"
+  private static let broadcastCaptureInterfaceOrientationRawKey =
+    "broadcast.captureInterfaceOrientationRaw"
   private static let minSaveDurationSeconds = 10
   private static let maxSaveDurationSeconds = 120
   private static let defaultSaveDurationSeconds = 15
@@ -95,6 +98,16 @@ struct BroadcastStateService {
 
   func isProWatermarkEnabled() -> Bool {
     sharedDefaults?.bool(forKey: Self.proWatermarkEnabledKey) ?? false
+  }
+
+  /// Written by the main app when the user starts a broadcast; read in `broadcastStarted`.
+  func isBroadcastCaptureLandscape() -> Bool {
+    sharedDefaults?.bool(forKey: Self.broadcastCaptureIsLandscapeKey) ?? false
+  }
+
+  /// `UIInterfaceOrientation.rawValue` from the main app when broadcast starts.
+  func getBroadcastCaptureInterfaceOrientationRaw() -> Int {
+    sharedDefaults?.integer(forKey: Self.broadcastCaptureInterfaceOrientationRawKey) ?? 0
   }
 
   func setLastSaveError(_ message: String?) {

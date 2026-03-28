@@ -22,24 +22,6 @@ struct MainContentView: View {
   var body: some View {
     NavigationStack {
       VStack(spacing: 24) {
-        HStack {
-          Text("Clip-It")
-            .font(SofiaFont.bold(size: 28))
-
-          Spacer()
-
-          Button {
-            showSettings = true
-          } label: {
-            Image(systemName: "gearshape.fill")
-              .font(.system(size: 22))
-              .foregroundStyle(Color("PrimaryColor"))
-          }
-          .buttonStyle(.plain)
-        }
-        .padding(.horizontal, 24)
-        .padding(.top, 24)
-
         ClipView(
           recordingViewModel: recordingViewModel,
           selectedDuration: $selectedDuration,
@@ -54,8 +36,21 @@ struct MainContentView: View {
       .overlay(EnableNotificationsView().allowsHitTesting(false))
       .frame(maxWidth: .infinity, maxHeight: .infinity)
       .background(Color(.systemBackground))
+      .navigationTitle("Clip-It")
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbar {
+        ToolbarItem(placement: .topBarTrailing) {
+          Button {
+            showSettings = true
+          } label: {
+            Image(systemName: "gearshape.fill")
+              .symbolRenderingMode(.hierarchical)
+          }
+          .tint(Color("PrimaryColor"))
+          .modifier(SettingsToolbarGlassButtonModifier())
+        }
+      }
       .onAppear {
-        AppDelegate.applyPortraitOrientation()
         Task {
           await subscriptionViewModel.refreshStatus()
           let stored = stateService.getSaveDurationSeconds()
@@ -71,6 +66,7 @@ struct MainContentView: View {
       }
       .onOpenURL { url in
         if url.host == "startRecording" {
+          stateService.syncBroadcastCaptureOrientationFromCurrentWindowScene()
           triggerRecordPicker = true
         }
       }
@@ -81,6 +77,21 @@ struct MainContentView: View {
   }
 }
 
+/// Liquid Glass toolbar control on iOS 26+; plain on earlier OS versions.
+private struct SettingsToolbarGlassButtonModifier: ViewModifier {
+  func body(content: Content) -> some View {
+    if #available(iOS 26.0, *) {
+      content
+        .buttonStyle(.glass)
+        .buttonBorderShape(.circle)
+    } else {
+      content
+        .buttonStyle(.borderless)
+    }
+  }
+}
+
 #Preview {
   MainContentView()
+    .environmentObject(SubscriptionViewModel())
 }

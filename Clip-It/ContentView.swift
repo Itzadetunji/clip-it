@@ -25,9 +25,6 @@ struct ContentView: View {
           )
         )
         .transition(.opacity)
-        .onAppear {
-          AppDelegate.applyPortraitOrientation()
-        }
       }
     }
     .animation(.easeInOut(duration: 0.35), value: hasCompletedWelcome)
@@ -39,4 +36,5 @@ struct ContentView: View {
 
 #Preview {
   ContentView()
+    .environmentObject(SubscriptionViewModel())
 }

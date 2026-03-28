@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C4A0D0C72F753F330069E47D /* TablerIcons in Frameworks */ = {isa = PBXBuildFile; productRef = C4A0D0C62F753F330069E47D /* TablerIcons */; };
+		C47A65292F77CFB300140858 /* TablerIcons in Frameworks */ = {isa = PBXBuildFile; productRef = C47A65282F77CFB300140858 /* TablerIcons */; };
 		C4B564D32F7284B800DCC5D7 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = C4B564D22F7284B800DCC5D7 /* RevenueCat */; };
 		C4B564D52F7284B800DCC5D7 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = C4B564D42F7284B800DCC5D7 /* RevenueCatUI */; };
 		C4FA262F2F69956100717246 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FA262E2F69956100717246 /* ReplayKit.framework */; };
@@ -101,7 +101,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C4E100012F80000100DCC5D7 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C4FA26062F69715600717246 /* Clip-It.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Clip-It.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4FA262C2F69956100717246 /* ClipIt.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClipIt.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4FA262E2F69956100717246 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
@@ -197,7 +196,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C4A0D0C72F753F330069E47D /* TablerIcons in Frameworks */,
+				C47A65292F77CFB300140858 /* TablerIcons in Frameworks */,
 				C4B564D52F7284B800DCC5D7 /* RevenueCatUI in Frameworks */,
 				C4B564D32F7284B800DCC5D7 /* RevenueCat in Frameworks */,
 			);
@@ -230,14 +229,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C4B566212F72B06A00DCC5D7 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				C4E100012F80000100DCC5D7 /* Config.xcconfig */,
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
 		C4FA25FD2F69715600717246 = {
 			isa = PBXGroup;
 			children = (
@@ -248,7 +239,6 @@
 				C4FA2A052F69970000717246 /* ClipControls */,
 				C4FA262D2F69956100717246 /* Frameworks */,
 				C4FA26072F69715600717246 /* Products */,
-				C4B566212F72B06A00DCC5D7 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -322,7 +312,7 @@
 			packageProductDependencies = (
 				C4B564D22F7284B800DCC5D7 /* RevenueCat */,
 				C4B564D42F7284B800DCC5D7 /* RevenueCatUI */,
-				C4A0D0C62F753F330069E47D /* TablerIcons */,
+				C47A65282F77CFB300140858 /* TablerIcons */,
 			);
 			productName = "Clip-It";
 			productReference = C4FA26062F69715600717246 /* Clip-It.app */;
@@ -426,7 +416,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				C4B564D12F7284B800DCC5D7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
-				C4A0D0C52F753F330069E47D /* XCRemoteSwiftPackageReference "tabler-icons-swift" */,
+				C47A65272F77CFB300140858 /* XCRemoteSwiftPackageReference "tabler-icons-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C4FA26072F69715600717246 /* Products */;
@@ -640,7 +630,6 @@
 		};
 		C4FA26142F69715700717246 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C4E100012F80000100DCC5D7 /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -691,7 +680,6 @@
 		};
 		C4FA26152F69715700717246 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C4E100012F80000100DCC5D7 /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -976,7 +964,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C4A0D0C52F753F330069E47D /* XCRemoteSwiftPackageReference "tabler-icons-swift" */ = {
+		C47A65272F77CFB300140858 /* XCRemoteSwiftPackageReference "tabler-icons-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/YazeedAlKhalaf/tabler-icons-swift.git";
 			requirement = {
@@ -995,9 +983,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C4A0D0C62F753F330069E47D /* TablerIcons */ = {
+		C47A65282F77CFB300140858 /* TablerIcons */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C4A0D0C52F753F330069E47D /* XCRemoteSwiftPackageReference "tabler-icons-swift" */;
+			package = C47A65272F77CFB300140858 /* XCRemoteSwiftPackageReference "tabler-icons-swift" */;
 			productName = TablerIcons;
 		};
 		C4B564D22F7284B800DCC5D7 /* RevenueCat */ = {
