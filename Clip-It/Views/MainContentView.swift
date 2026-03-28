@@ -46,8 +46,7 @@ struct MainContentView: View {
             Image(systemName: "gearshape.fill")
               .symbolRenderingMode(.hierarchical)
           }
-          .tint(Color("PrimaryColor"))
-          .modifier(SettingsToolbarGlassButtonModifier())
+          
         }
       }
       .onAppear {
