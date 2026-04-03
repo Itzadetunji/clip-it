@@ -642,7 +642,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "Clip-It/Clip-It.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -651,8 +651,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Clip-It/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save screen recordings to your Photos library.";
-				INFOPLIST_PREPROCESS = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -664,11 +664,12 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.adetunji.ClipIt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -694,7 +695,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "Clip-It/Clip-It.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -703,8 +704,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Clip-It/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save screen recordings to your Photos library.";
-				INFOPLIST_PREPROCESS = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -716,11 +717,12 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.adetunji.ClipIt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -746,7 +748,7 @@
 				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClipItExtensions/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It Recorder";
+				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save 10-second clips to your Photos library.";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
@@ -778,7 +780,7 @@
 				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClipItExtensions/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It Recorder";
+				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save 10-second clips to your Photos library.";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
@@ -810,7 +812,7 @@
 				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClipItSetupUI/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It Recorder";
+				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -840,7 +842,7 @@
 				DEVELOPMENT_TEAM = 4BMQZQ7YSK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClipItSetupUI/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It Recorder";
+				INFOPLIST_KEY_CFBundleDisplayName = "Clip-It";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				LD_RUNPATH_SEARCH_PATHS = (
