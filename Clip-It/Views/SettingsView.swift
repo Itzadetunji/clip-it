@@ -128,7 +128,7 @@ struct SettingsView: View {
                             showPaywall = true
                         }
                     } label: {
-                        Text("Go Pro")
+                        Text("Go Pro 🚀")
                             .font(SofiaFont.semiBold(size: 16))
                             .foregroundStyle(.white)
                             .frame(maxWidth: .infinity, minHeight: 48)
